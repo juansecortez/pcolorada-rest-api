@@ -1,11 +1,12 @@
 import { Request, Response } from "express";
 import ActiveDirectory from "activedirectory2";
+import axios from "axios";
 import {
   generateAccessToken,
   generateRefreshToken,
 } from "../config/generateToken";
 import jwt from "jsonwebtoken";
-import { IDecodeToken } from "../interfaces";
+import { IDecodeToken, IUserData } from "../interfaces";
 export const configActiveDirectory = {
   url: `${process.env.AD_DOMAIN}`,
   username: `${process.env.AD_USER}`,
@@ -16,10 +17,15 @@ export const configActiveDirectory = {
 const authCtrl = {
   loging: async (req: Request, res: Response) => {
     var ad = new ActiveDirectory(configActiveDirectory);
+    console.log(configActiveDirectory, ad);
     const { username, password } = req.body;
-    ad.authenticate(username, password, (err, auth) => {
+    ad.authenticate(username, password, (err: any, auth) => {
       if (err) {
-        let error = JSON.stringify(err);
+        console.log(err);
+        if (err.code === 49) {
+          return res.status(500).json({ msg: "Servidor no disponible" });
+        }
+        let error: any = JSON.stringify(err);
         if (error.includes("ENOTFOUND")) {
           return res.status(500).json({ msg: "Servidor no disponible" });
         }
@@ -41,8 +47,8 @@ const authCtrl = {
             access_token,
           });
         } else {
-          console.log(err)
-          console.log(auth)
+          console.log(err);
+          console.log(auth);
           res
             .status(404)
             .json({ msg: "El usuario o la contraseña son incorrectos" });
@@ -77,6 +83,37 @@ const authCtrl = {
       res.json({ access_token, username: decoded.username });
     } catch (error: any) {
       return res.status(500).json({ msg: error.message });
+    }
+  },
+  loginSOAP: async (req: Request, res: Response) => {
+    const { username, password } = req.body;
+    try {
+      const params = new URLSearchParams();
+      params.append("usuario", username);
+      params.append("contrasena", password);
+      const result = await axios.post(
+        "http://vwebdelta/WebDataSap/Service1.asmx/VALIDA_USUARIO",
+        params
+      );
+      if (typeof result.data === "string") {
+        return res.json({ message: "El usuario o la contraseña estan mal" });
+      }
+      const user: IUserData = result.data[0];
+      const access_token = generateAccessToken({ id: user.USUARIOID });
+      const refresh_token = generateRefreshToken({ id: user.USUARIOID });
+      res.cookie("refreshtoken", refresh_token, {
+        httpOnly: true,
+        path: "/api/refresh_token",
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
+      });
+      res.json({
+        msg: "Login Success!",
+        access_token,
+        user,
+      });
+    } catch (error: any) {
+      console.log(error.message);
+      return res.status(500).json({ message: "No hay servicio" });
     }
   },
 };
