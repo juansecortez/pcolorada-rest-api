@@ -8,5 +8,6 @@ router.post("/", workersGrataCtrl.insertBonoFinalWorker);
 router.post("/year", workersGrataCtrl.getWorkersByYear);
 router.post("/calf", workersGrataCtrl.getWorkersTotByCalf);
 router.post("/potential", workersGrataCtrl.getWorkersTotByPotential);
+router.post("/evaluated", workersGrataCtrl.getWorkersTotEvaluated);
 
 export default router;
