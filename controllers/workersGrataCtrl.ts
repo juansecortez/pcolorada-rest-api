@@ -24,6 +24,41 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  insertBonoFinalWorker: async (req: Request, res: Response) => {
+    try {
+      const { codigo_Empleado, bono_Final, anio } = req.body;
+      const errors = validateInsertBonoFinal(codigo_Empleado, bono_Final, anio);
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const worker = await pool1.query(
+        `USE GRATA
+        SELECT * FROM 
+        Trabajadores where codigo_Empleado=${codigo_Empleado} and anio = ${anio}`
+      );
+      if (Object.keys(worker.recordsets[0]).length === 0) {
+        return res.status(404).json({
+          message: `No se encontro el empledo con el codigo: ${codigo_Empleado} en el año ${anio}`,
+        });
+      }
+      await pool1.query(`USE GRATA
+      UPDATE Trabajadores set bono_Final = ${bono_Final}
+      where codigo_Empleado = ${codigo_Empleado} and anio = ${anio}`);
+      const result = await pool1.query(
+        `USE GRATA
+        SELECT * FROM 
+        Trabajadores where codigo_Empleado=${codigo_Empleado} and anio = ${anio}`
+      );
+      pool1.close();
+      return res.json(result.recordsets[0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
   getWorkersTotByCalf: async (req: Request, res: Response) => {
     try {
       const { anio, direction } = req.body;
@@ -45,7 +80,7 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
-  },
+  }
 };
 
 export default grataController;
