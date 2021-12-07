@@ -22,6 +22,7 @@ app.get("/api/v1", (req, res) => {
   res.json({ msg: "Bienvenido a la REST API de Peña Colorada" });
 });
 app.use("/api/v1/grata", routes.grataRouter);
+app.use("/api/v1/workers", routes.workersGrataRouter);
 app.use("/api/v1/auth", routes.authRouter);
 app.use("/api/v1/solicitudes", routes.solicitudesRouter);
 app.use("/api/v1/red-ascenso", routes.redAscensoRouter);
