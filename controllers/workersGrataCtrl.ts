@@ -82,6 +82,22 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getWorkers: async (req: Request, res: Response) => {
+    try {
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const anio = 2020;
+      const workers = await pool1.query(
+        `USE GRATA SELECT * FROM Trabajadores where anio = ${anio}`
+      );
+      pool1.close();
+      return res.json(workers.recordsets[0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
   getWorkersTotByCalf: async (req: Request, res: Response) => {
     try {
       const { anio, direction } = req.body;
