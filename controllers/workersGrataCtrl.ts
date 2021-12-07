@@ -59,6 +59,29 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getWorkersByDirection: async (req: Request, res: Response) => {
+    try {
+      const direction = parseInt(req.params.direction);
+      if (isNaN(direction)) {
+        return res
+          .status(400)
+          .json({ message: "La dirección tiene que se un numero" });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const workers = await pool1.query(
+        `USE GRATA select t.* from periodos p
+        inner join Trabajadores t ON p.id_Periodo = t.id_periodo 
+        where p.estatus = 1 and t.id_direccion = ${direction}`
+      );
+      pool1.close();
+      return res.json(workers.recordsets[0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
   getWorkersTotByCalf: async (req: Request, res: Response) => {
     try {
       const { anio, direction } = req.body;
