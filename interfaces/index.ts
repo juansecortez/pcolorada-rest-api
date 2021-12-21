@@ -5,6 +5,7 @@ export interface IDecodeToken {
   NOMBRE: string;
   NOEMPLEADO: string;
   direcciones: [];
+  role: string;
   iat: number;
   exp: number;
 }
@@ -25,8 +26,8 @@ export interface IUserData {
   USUARIOID: string;
   NOMBRE: string;
   NOEMPLEADO: string;
+  direcciones: [];
 }
 export interface IReqAuth extends Request {
   user?: IUserData;
-  direcciones?:[]
 }
