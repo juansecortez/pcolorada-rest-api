@@ -7,5 +7,6 @@ const router = Router();
 router.post("/creategrata", grataCtrl.createGrata);
 router.post("/validExistGrata", grataCtrl.validateExistGrata);
 router.get("/presupuesto", grataCtrl.getPresupuestoGrata);
+router.post("/finish", grataCtrl.finishGrata);
 
 export default router;

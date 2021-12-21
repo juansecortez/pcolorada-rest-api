@@ -115,6 +115,22 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
-  }
+  },
+  finishGrata: async (req: IReqAuth, res: Response) => {
+    try {
+      const { direccion, comentarios, anio } = req.body;
+      console.log({ direccion, comentarios, anio });
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC [dbo].[finishGrata] '${comentarios}',${anio},${direccion}`);
+      pool1.close();
+      res.status(200).json({ message: result.recordsets[0][0].msg });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 export default grataController;
