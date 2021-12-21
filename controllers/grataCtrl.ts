@@ -163,6 +163,35 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
+  },
+  authorizeGrata: async (req: Request, res: Response) => {
+    try {
+      const { anio, idDireccion, tipoAutorizacion, direccionAutorizacion } =
+        req.body;
+      const errors = validateAuthorizeGrata(
+        anio,
+        idDireccion,
+        tipoAutorizacion,
+        direccionAutorizacion
+      );
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const result = await pool1.query(`USE GRATA
+      [dbo].[autorizarGrata]
+      @anio = ${anio},
+      @direccion = ${idDireccion},
+      @direccion_autorizacion = ${direccionAutorizacion},
+      @tipo_autorizacion = ${tipoAutorizacion}`);
+      pool1.close();
+      res.status(200).json({ message: result.recordsets[0][0].msg });
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
   }
 };
 export default grataController;
