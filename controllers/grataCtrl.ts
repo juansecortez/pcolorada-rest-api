@@ -210,6 +210,22 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
-  }
+  },
+  getYears: (req: Request, res: Response) => {
+    try {
+      let anios = [];
+      let n = 0;
+      let year = new Date();
+      let newYear = year.getFullYear();
+      let newyear = newYear - 1;
+      while (n < 5) {
+        n++;
+        anios.push({ anio: newyear++ });
+      }
+      res.json(anios);
+    } catch (error: any) {
+      console.log(error);
+    }
+  },
 };
 export default grataController;
