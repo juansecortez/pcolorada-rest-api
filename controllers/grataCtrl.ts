@@ -149,6 +149,20 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
+  },
+  getAnios: async (req: Request, res: Response) => {
+    try {
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const result = await pool1.query(`USE GRATA
+      select DISTINCT(anio_periodo) from periodos`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
   }
 };
 export default grataController;

@@ -9,5 +9,6 @@ router.post("/validExistGrata", grataCtrl.validateExistGrata);
 router.get("/presupuesto", grataCtrl.getPresupuestoGrata);
 router.post("/finish", grataCtrl.finishGrata);
 router.post("/direcciones", grataCtrl.getDirecciones);
+router.get("/aniosGrata", grataCtrl.getAnios);
 
 export default router;
