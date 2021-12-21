@@ -192,6 +192,24 @@ const grataController = {
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
+  },
+  getAuthGrata: async (req: Request, res: Response) => {
+    try {
+      const { idDireccion, anio } = req.query;
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const result = await pool1.query(`USE GRATA
+      select per.autorizacion_rh,per.autorizacion_general from direccion d
+      inner join presupuestos p on d.id = p.id_Direccion
+      inner join periodos per on p.id_Periodo = per.id_Periodo 
+      where d.id = ${idDireccion} and per.anio_periodo = ${anio}`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0][0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
   }
 };
 export default grataController;
