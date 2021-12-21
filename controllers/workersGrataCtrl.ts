@@ -46,7 +46,7 @@ const grataController = {
         });
       }
       await pool1.query(`USE GRATA
-      UPDATE Trabajadores set bono_Final = ${bono_Final}
+      UPDATE Trabajadores set bono_Final = ${bono_Final}, fecha_Actualizacion = CURRENT_TIMESTAMP
       where codigo_Empleado = ${codigo_Empleado} and anio = ${anio}`);
       const result = await pool1.query(
         `USE GRATA
@@ -160,6 +160,22 @@ const grataController = {
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotEvaluated] ${anio}, ${direction}`);
       res.json(workers.recordsets[0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getDirectionsByUserId: async (req: Request, res: Response) => {
+    try {
+      const { userId } = req.query;
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(500).json({ message: "No hay servicio" });
+      }
+      const directions = await pool1.query(
+        `USE GRATA EXEC [dbo].[getDirectionsByUserID] '${userId}' `
+      );
+      pool1.close();
+      res.json(directions.recordsets[0]);
     } catch (error: any) {
       return res.status(500).json({ message: error.message });
     }
