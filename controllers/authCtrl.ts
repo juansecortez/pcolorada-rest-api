@@ -22,6 +22,7 @@ const authCtrl = {
   refreshToken: async (req: Request, res: Response) => {
     try {
       const rf_token = req.cookies.refreshtoken;
+      console.log(req.cookies.refreshtoken)
       if (!rf_token)
         return res.status(401).json({ message: "Please login now!" });
       console.log("hire");
@@ -45,7 +46,7 @@ const authCtrl = {
         return res
           .status(400)
           .json({ message: "This account does not exist." });
-      const { USUARIOID, NOMBRE, NOEMPLEADO, direcciones } = decoded;
+      const { USUARIOID, NOMBRE, NOEMPLEADO, direcciones, role } = decoded;
       const access_token = generateAccessToken({
         USUARIOID,
         NOMBRE,
@@ -54,8 +55,7 @@ const authCtrl = {
       });
       res.json({
         access_token,
-        user: { USUARIOID, NOMBRE, NOEMPLEADO },
-        direcciones,
+        user: { USUARIOID, NOMBRE, NOEMPLEADO, direcciones, role },
       });
     } catch (error: any) {
       return res.status(500).json({ message: "No hay servicio" });
@@ -64,6 +64,19 @@ const authCtrl = {
   loginSOAP: async (req: Request, res: Response) => {
     const { username, password } = req.body;
     try {
+      const pool2 = await getconectionGratas();
+      if (pool2 === false) {
+        return;
+      }
+      const resul = await pool2.query(`USE GRATA
+      SELECT * FROM usuarios WHERE usuario_id = '${username}'`);
+      if (Object.keys(resul.recordsets[0]).length === 0) {
+        return res.status(401).json({
+          message: "No cuentas con las credenciales para acceder al sistema",
+        });
+      }
+      const role = resul.recordsets[0][0].role;
+      pool2.close();
       const params = new URLSearchParams();
       params.append("usuario", username);
       params.append("contrasena", password);
@@ -71,8 +84,14 @@ const authCtrl = {
         "http://vwebdelta/WebDataSap/Service1.asmx/VALIDA_USUARIO",
         params
       );
+
+      if (Object.keys(result.data).length === 0) {
+        return res.status(401).json({
+          message: "No cuentas con las credenciales para acceder al sistema",
+        });
+      }
       if (typeof result.data === "string") {
-        return res.json({ message: "El usuario o la contraseña estan mal" });
+        return res.status(401).json({ message: "El usuario o la contraseña estan mal" });
       }
       const user: IUserData = result.data[0];
       const { USUARIOID, NOMBRE, NOEMPLEADO } = user;
@@ -80,9 +99,9 @@ const authCtrl = {
       if (pool1 === false) {
         return;
       }
-      const resultado = await pool1.query(`USE GRATA
-      SELECT id_direccion as IdDireccion FROM usuarios WHERE usuario_id = '${USUARIOID}'`);
       var direcciones = [];
+      const resultado = await pool1.query(`USE GRATA
+      SELECT id_direccion as IdDireccion FROM usuarios_direcciones WHERE id_usuario = '${USUARIOID}'`);
       for (var value in resultado.recordsets[0]) {
         direcciones.push(resultado.recordsets[0][value].IdDireccion);
       }
@@ -92,12 +111,14 @@ const authCtrl = {
         NOMBRE,
         NOEMPLEADO,
         direcciones,
+        role,
       });
       const refresh_token = generateRefreshToken({
         USUARIOID,
         NOMBRE,
         NOEMPLEADO,
         direcciones,
+        role,
       });
       res.cookie("refreshtoken", refresh_token, {
         httpOnly: true,
@@ -111,8 +132,9 @@ const authCtrl = {
           USUARIOID,
           NOMBRE,
           NOEMPLEADO,
+          direcciones,
+          role,
         },
-        direcciones,
       });
     } catch (error: any) {
       console.log(error.message);
