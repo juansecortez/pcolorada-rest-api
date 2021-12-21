@@ -29,8 +29,8 @@ const auth = async (req: IReqAuth, res: Response, next: NextFunction) => {
       USUARIOID,
       NOMBRE,
       NOEMPLEADO,
+      direcciones
     };
-    req.direcciones = direcciones;
     next();
   } catch (error: any) {
     return res.status(500).json({ message: error.message });
