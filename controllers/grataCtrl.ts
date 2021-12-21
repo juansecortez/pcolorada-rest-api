@@ -101,5 +101,20 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getPresupuestoGrata: async (req: Request, res: Response) => {
+    try {
+      const { periodo, idDireccion } = req.query;
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return;
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC getPresupuestoGrata ${periodo},${idDireccion}`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0][0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  }
 };
 export default grataController;
