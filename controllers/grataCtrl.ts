@@ -91,5 +91,15 @@ const grataController = {
       return res.json({ message: error.message });
     }
   },
+  validateExistGrata: async (req: Request, res: Response) => {
+    try {
+      const { anio } = req.body;
+      const result = await validExistGrata(anio);
+      return res.json(result);
+    } catch (error: any) {
+      console.log(error);
+      return res.status(500).json({ message: error.message });
+    }
+  },
 };
 export default grataController;

@@ -5,5 +5,6 @@ const router = Router();
 
 //Crear grata
 router.post("/creategrata", grataCtrl.createGrata);
+router.post("/validExistGrata", grataCtrl.validateExistGrata);
 
 export default router;
