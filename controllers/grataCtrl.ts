@@ -41,25 +41,12 @@ const grataController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
-      console.log({
-        presupuestoFinanzas,
-        presupuestoMinas,
-        presupuestoPelet,
-        presupuestoRH,
-        presupuestoGeneral,
-        presupuestoBeneficio,
-        presupuestoTec,
-        presupuestoDirectores,
-        anio,
-        fechaInicio,
-        fechaFin,
-      });
       const valid = await validExistGrata(anio);
       if (valid.message === 1) {
         return res
           .status(403)
           .json({ message: `Ya existe una grata con el periodo ${anio}` });
-      } 
+      }
       await newGrata(1, anio, fechaFin, fechaInicio, presupuestoRH);
       await newGrata(2, anio, fechaFin, fechaInicio, presupuestoFinanzas);
       await newGrata(3, anio, fechaFin, fechaInicio, presupuestoMinas);
@@ -70,7 +57,7 @@ const grataController = {
       await newGrata(8, anio, fechaFin, fechaInicio, presupuestoDirectores);
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
         SELECT usuario_id from usuarios`);
@@ -85,10 +72,20 @@ const grataController = {
       //   );
       // });
       pool1.close();
-      return res.status(200).json({ message: "Gratas creadas correctamente" });
+      const pool2 = await getconectionGratas();
+      if (pool2 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result2 = await pool2.query(`USE GRATA
+        EXEC getGrata ${anio}
+      `);
+      const workersGrata = result2.recordsets[0];
+      return res
+        .status(201)
+        .json({ message: "Gratas creadas correctamente", workersGrata });
     } catch (error: any) {
       console.log({ message: error.message });
-      return res.json({ message: error.message });
+      return res.status(400).json({ message: error.message });
     }
   },
   validateExistGrata: async (req: Request, res: Response) => {
@@ -106,10 +103,27 @@ const grataController = {
       const { periodo, idDireccion } = req.query;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       EXEC getPresupuestoGrata ${periodo},${idDireccion}`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0][0]);
+    } catch (error: any) {
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getPresupuestoRealGrata: async (req: Request, res: Response) => {
+    try {
+      const { periodo, idDireccion } = req.query;
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      SELECT p.presupuesto_Final FROM presupuestos p
+      INNER JOIN periodos per on p.id_Periodo = per.id_Periodo
+      where per.anio_periodo = ${periodo} and p.id_Direccion = ${idDireccion}`);
       pool1.close();
       res.status(200).json(result.recordsets[0][0]);
     } catch (error: any) {
@@ -122,7 +136,7 @@ const grataController = {
       console.log({ direccion, comentarios, anio });
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       EXEC [dbo].[finishGrata] '${comentarios}',${anio},${direccion}`);
@@ -137,7 +151,7 @@ const grataController = {
       const { anio } = req.body;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       select d.nombre_direccion,d.id from direccion d
@@ -154,7 +168,7 @@ const grataController = {
     try {
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       select DISTINCT(anio_periodo) from periodos`);
@@ -179,7 +193,7 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       [dbo].[autorizarGrata]
@@ -198,7 +212,7 @@ const grataController = {
       const { idDireccion, anio } = req.query;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       select per.autorizacion_rh,per.autorizacion_general from direccion d
@@ -222,7 +236,25 @@ const grataController = {
         n++;
         anios.push({ anio: newyear++ });
       }
-      res.json(anios);
+      const anioss = [{ anio: 2020 }];
+      res.json(anioss);
+    } catch (error: any) {
+      console.log(error);
+    }
+  },
+  getGratas: async (req: Request, res: Response) => {
+    try {
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      select d.nombre_direccion,pre.presupuesto,pre.presupuesto_Final,
+      p.anio_periodo from direccion d
+      inner join presupuestos pre on d.id = pre.id_Direccion
+      inner join periodos p on pre.id_Periodo = p.id_Periodo`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
       console.log(error);
     }

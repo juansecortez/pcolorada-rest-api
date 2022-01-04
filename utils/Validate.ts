@@ -34,7 +34,7 @@ export const validateGrata = (
 ) => {
   const errors = [];
   if (!anio) {
-    errors.push("El periodo es requerido");
+    errors.push("El año es requerido");
   } else if (isNaN(anio)) {
     errors.push("El año tiene que ser numerico");
   }
@@ -103,5 +103,34 @@ export const validateGrata = (
     errors.push("La fecha inicio tiene que ser string");
   }
 
+  return errors;
+};
+export const validateAuthorizeGrata = (
+  anio: number,
+  idDireccion: number,
+  tipoAutorizacion: number,
+  direccionAutorizacion: number
+) => {
+  const errors = [];
+  if (!anio) {
+    errors.push("El año es requerido");
+  } else if (isNaN(anio)) {
+    errors.push("El año tiene que ser numerico");
+  }
+  if (!idDireccion) {
+    errors.push("La dirección es requerida");
+  } else if (isNaN(anio)) {
+    errors.push("La dirección tiene que ser numerica");
+  }
+  if (!tipoAutorizacion) {
+    errors.push("El tipo de autorización es requerida");
+  } else if (isNaN(anio)) {
+    errors.push("El tipo de autorizacio tiene que ser numerica");
+  }
+  if (!direccionAutorizacion) {
+    errors.push("La dirección a autorizar es requerida");
+  } else if (isNaN(anio)) {
+    errors.push("La dirección a autorizar tiene que ser numerica");
+  }
   return errors;
 };
