@@ -8,16 +8,20 @@ import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import routes from "./routes";
 
-const json = require("./swagger.json")
+const json = require("./swagger.json");
 
 //Middleware
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    origin: `${process.env.URL_CLIENT}`,
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(cookieParser());
-
 
 //Routes
 app.get("/api/v1", (req, res) => {
