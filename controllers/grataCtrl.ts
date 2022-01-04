@@ -61,15 +61,14 @@ const grataController = {
       const result = await pool1.query(`USE GRATA
         SELECT usuario_id from usuarios`);
       const workers = result.recordsets[0];
-      console.log(workers);
-      // workers.map(async (worker) => {
-      //   await sendEmail(
-      //     `${worker.usuario_id}@pcolorada.com`,
-      //     `${process.env.URL_BASE_API}/Director`,
-      //     `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`,
-      //     anio
-      //   );
-      // });
+      workers.map(async (worker) => {
+        await sendEmail(
+          `${worker.usuario_id}@pcolorada.com`,
+          `${process.env.URL_BASE_API}/Director`,
+          `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`,
+          anio
+        );
+      });
       pool1.close();
       const pool2 = await getconectionGratas();
       if (pool2 === false) {
@@ -132,7 +131,6 @@ const grataController = {
   finishGrata: async (req: IReqAuth, res: Response) => {
     try {
       const { direccion, comentarios, anio } = req.body;
-      console.log({ direccion, comentarios, anio });
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
