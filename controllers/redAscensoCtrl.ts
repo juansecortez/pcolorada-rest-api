@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import excel from "exceljs";
-import { tutorials } from "../domyData";
+// import { tutorials } from "../domyData";
 
 const redAscensoCtrl = {
   createKardex: async (req: Request, res: Response) => {
@@ -127,7 +127,7 @@ const redAscensoCtrl = {
       { header: "Edad del empleado", key: "edad", width: 20 },
     ];
     // Add Array Rows
-    worksheet.addRows(tutorials);
+    worksheet.addRows([]);
 
     res.setHeader(
       "Content-Type",

@@ -22,10 +22,8 @@ const authCtrl = {
   refreshToken: async (req: Request, res: Response) => {
     try {
       const rf_token = req.cookies.refreshtoken;
-      console.log(req.cookies.refreshtoken)
       if (!rf_token)
         return res.status(401).json({ message: "Please login now!" });
-      console.log("hire");
       const decoded = <IDecodeToken>(
         jwt.verify(rf_token, `${process.env.REFRESH_TOKEN_SECRET}`)
       );

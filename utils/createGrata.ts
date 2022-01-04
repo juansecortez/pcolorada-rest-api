@@ -11,7 +11,7 @@ const newGrata = async (
   const pool1 = await getconectionVDBDELTA();
   //Ejecutar el procedimiento almacenado de SQL SERVER
   if (pool1 === false) {
-    throw new Error("No hay conexion");
+    throw new Error("No hay conexión");
   }
   const respond = await pool1
     .request()
@@ -24,7 +24,7 @@ const newGrata = async (
   pool1.close();
   const pool = await getconectionGratas();
   if (pool === false) {
-    throw new Error("No hay conexion");
+    throw new Error("No hay conexión");
   }
   const data = JSON.stringify(recordsets[0]);
   const timeElapsed = Date.now();
@@ -35,7 +35,7 @@ const newGrata = async (
   const { recordsets: respond2 } = respondG;
   if (Object.keys(respond2).length === 0) {
     pool.close();
-    throw new Error("No creo la grata");
+    throw new Error("No se creo la grata");
   }
   pool.close();
   pool1.close();
