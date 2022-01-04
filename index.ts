@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import routes from "./routes";
-import jsonSwagger from './swagger.json'
+import jsonSwagger from './assets/swagger.json'
 
 //Middleware
 const app = express();
