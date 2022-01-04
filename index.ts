@@ -4,8 +4,11 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import routes from "./routes";
+
+const json = require("./swagger.json")
 
 //Middleware
 const app = express();
@@ -15,12 +18,12 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(cookieParser());
 
-//Database
 
 //Routes
 app.get("/api/v1", (req, res) => {
   res.json({ msg: "Bienvenido a la REST API de Peña Colorada" });
 });
+app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(json));
 app.use("/api/v1/grata", routes.grataRouter);
 app.use("/api/v1/workers", routes.workersGrataRouter);
 app.use("/api/v1/auth", routes.authRouter);

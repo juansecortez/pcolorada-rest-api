@@ -1,0 +1,47 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: REST API Peña Colorada
+  description: REST API para Consorcio Minero Benito Juárez Pena Colorada, S.A. de C.V.
+host: localhost:5001
+basePath: /api/v1
+schemes:
+  - http
+  - https
+tags:
+  - name: Login
+    description: Sesiones de la API.
+  - name: Grata
+    description: Rutas para el sistema de gratas
+paths:
+  /auth/login:
+    post:
+      description: Inicio de sesión que devuelve un access token, una cookie para el refresh token y devuelve la información del usuario 
+      tags:
+        - Login
+      parameters:
+        - in: 
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+            properties:
+                message:
+                  type: string
+                access_token:
+                  type: string
+                user:
+                  type: object
+                  properties:
+                    USUARIOID:
+                      type: number
+                    NOMBRE:
+                      type: string
+                    NOEMPLEADO:
+                      type: number
+                    direcciones:
+                      type: array
+                      items:
+                        type: number
+      
