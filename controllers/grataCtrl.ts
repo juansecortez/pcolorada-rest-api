@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { getconectionGratas } from "../config/database";
 import { IGrata, IReqAuth } from "../interfaces";
 import newGrata from "../utils/createGrata";
-import { getGrata } from "../utils/getGrata";
 import { sendEmail } from "../utils/sendEmail";
 import { validateAuthorizeGrata, validateGrata } from "../utils/Validate";
 import { validExistGrata } from "../utils/validGrata";
