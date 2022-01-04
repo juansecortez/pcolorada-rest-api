@@ -14,5 +14,6 @@ router.post("/authGrata", grataCtrl.authorizeGrata);
 router.get("/authGrata", grataCtrl.getAuthGrata);
 router.get("/anios", grataCtrl.getYears);
 router.get("/getGratas", grataCtrl.getGratas);
+router.get("/getStatusGrata", grataCtrl.getStatusGrata);
 
 export default router;

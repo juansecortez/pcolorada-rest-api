@@ -263,5 +263,22 @@ const grataController = {
       console.log({ message: error.message });
     }
   },
+  getStatusGrata: async (req: Request, res: Response) => {
+    try {
+      const { idDireccion, periodo } = req.query;
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      select p.estatus from presupuestos pre
+      inner join periodos p on pre.id_Periodo = p.id_Periodo
+      where pre.id_Direccion = ${idDireccion} and p.anio_periodo = ${periodo}`);
+      pool1.close();
+      res.status(200).json(result.recordsets[0][0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+    }
+  },
 };
 export default grataController;
