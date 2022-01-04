@@ -14,13 +14,14 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const workers = await pool1.query(`USE GRATA
       SELECT * FROM Trabajadores WHERE anio = ${anio} and id_direccion = ${direccion}`);
       pool1.close();
       return res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -33,7 +34,7 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const worker = await pool1.query(
         `USE GRATA
@@ -56,6 +57,7 @@ const grataController = {
       pool1.close();
       return res.json(result.recordsets[0]);
     } catch (error: any) {
+     console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -69,7 +71,7 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const workers = await pool1.query(
         `USE GRATA select t.* from periodos p
@@ -79,6 +81,7 @@ const grataController = {
       pool1.close();
       return res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -86,7 +89,7 @@ const grataController = {
     try {
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const anio = 2020;
       const workers = await pool1.query(
@@ -95,6 +98,7 @@ const grataController = {
       pool1.close();
       return res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -111,12 +115,13 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotByCalf] ${anio}, ${direction}`);
       res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -133,12 +138,13 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotByPotential] ${anio}, ${direction}`);
       res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -155,12 +161,13 @@ const grataController = {
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotEvaluated] ${anio}, ${direction}`);
       res.json(workers.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -169,7 +176,7 @@ const grataController = {
       const { userId } = req.query;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return res.status(500).json({ message: "No hay servicio" });
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const directions = await pool1.query(
         `USE GRATA EXEC [dbo].[getDirectionsByUserID] '${userId}' `
@@ -177,6 +184,7 @@ const grataController = {
       pool1.close();
       res.json(directions.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },

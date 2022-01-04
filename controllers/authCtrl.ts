@@ -15,7 +15,8 @@ const authCtrl = {
         path: "/api/v1/auth/refresh_token",
       });
       return res.json({ message: "Logged out!" });
-    } catch (error) {
+    } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: "No hay servicio" });
     }
   },
@@ -56,6 +57,7 @@ const authCtrl = {
         user: { USUARIOID, NOMBRE, NOEMPLEADO, direcciones, role },
       });
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: "No hay servicio" });
     }
   },
@@ -64,7 +66,7 @@ const authCtrl = {
     try {
       const pool2 = await getconectionGratas();
       if (pool2 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       const resul = await pool2.query(`USE GRATA
       SELECT * FROM usuarios WHERE usuario_id = '${username}'`);
@@ -89,13 +91,15 @@ const authCtrl = {
         });
       }
       if (typeof result.data === "string") {
-        return res.status(401).json({ message: "El usuario o la contraseña estan mal" });
+        return res
+          .status(401)
+          .json({ message: "El usuario o la contraseña estan mal" });
       }
       const user: IUserData = result.data[0];
       const { USUARIOID, NOMBRE, NOEMPLEADO } = user;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
-        return;
+        return res.status(400).json({ message: "No hay servicio" });
       }
       var direcciones = [];
       const resultado = await pool1.query(`USE GRATA
@@ -135,7 +139,7 @@ const authCtrl = {
         },
       });
     } catch (error: any) {
-      console.log(error.message);
+      console.log({ message: error.message });
       return res.status(500).json({ message: "No hay servicio" });
     }
   },

@@ -92,7 +92,7 @@ const grataController = {
       const result = await validExistGrata(anio);
       return res.json(result);
     } catch (error: any) {
-      console.log(error);
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -108,6 +108,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0][0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -125,6 +126,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0][0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -140,6 +142,7 @@ const grataController = {
       pool1.close();
       res.status(200).json({ message: result.recordsets[0][0].msg });
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -158,6 +161,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -172,6 +176,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -201,6 +206,7 @@ const grataController = {
       pool1.close();
       res.status(200).json({ message: result.recordsets[0][0].msg });
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -219,6 +225,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0][0]);
     } catch (error: any) {
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -236,7 +243,7 @@ const grataController = {
       const anioss = [{ anio: 2020 }];
       res.json(anioss);
     } catch (error: any) {
-      console.log(error);
+      console.log({ message: error.message });
     }
   },
   getGratas: async (req: Request, res: Response) => {
@@ -253,7 +260,7 @@ const grataController = {
       pool1.close();
       res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
-      console.log(error);
+      console.log({ message: error.message });
     }
   },
 };
