@@ -57,7 +57,7 @@ const grataController = {
       pool1.close();
       return res.json(result.recordsets[0]);
     } catch (error: any) {
-     console.log({ message: error.message });
+      console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
     }
   },
@@ -119,6 +119,7 @@ const grataController = {
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotByCalf] ${anio}, ${direction}`);
+      pool1.close();
       res.json(workers.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
@@ -142,6 +143,7 @@ const grataController = {
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotByPotential] ${anio}, ${direction}`);
+      pool1.close();
       res.json(workers.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
@@ -165,6 +167,7 @@ const grataController = {
       }
       const workers = await pool1.query(`USE GRATA
       EXEC [dbo].[workersTotEvaluated] ${anio}, ${direction}`);
+      pool1.close();
       res.json(workers.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
