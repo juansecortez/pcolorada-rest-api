@@ -19,6 +19,20 @@ export const validateInsertBonoFinal = (
   }
   return errors;
 };
+export const validateString = (varString: any): boolean => {
+  if (typeof varString === "string") {
+    return true;
+  } else {
+    return false;
+  }
+};
+export const validateNumber = (varNumber: any): boolean => {
+  if (isNaN(parseInt(varNumber))) {
+    return false;
+  } else {
+    return true;
+  }
+};
 export const validateGrata = (
   presupuestoFinanzas: number,
   presupuestoMinas: number,
@@ -31,7 +45,7 @@ export const validateGrata = (
   anio: number,
   fechaFin: string,
   fechaInicio: string
-) => {
+): string[] => {
   const errors = [];
   if (!anio) {
     errors.push("El año es requerido");
