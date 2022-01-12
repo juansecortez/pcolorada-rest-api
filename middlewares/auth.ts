@@ -1,5 +1,5 @@
 import axios from "axios";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 import { IDecodeToken, IReqAuth } from "../interfaces";
 
@@ -24,15 +24,20 @@ const auth = async (req: IReqAuth, res: Response, next: NextFunction) => {
     if (typeof result.data === "string") {
       return res.json({ message: "No existe el usuario" });
     }
-    const { USUARIOID, NOMBRE, NOEMPLEADO, direcciones } = decoded;
+    const { USUARIOID, NOMBRE, NOEMPLEADO, direcciones, role } = decoded;
     req.user = {
       USUARIOID,
       NOMBRE,
       NOEMPLEADO,
-      direcciones
+      direcciones,
+      role,
     };
     next();
   } catch (error: any) {
+    console.log(error.message);
+    if (error.name === "TokenExpiredError") {
+      return res.status(401).json({ message: "Please login now!" });
+    }
     return res.status(500).json({ message: error.message });
   }
 };

@@ -51,6 +51,7 @@ const authCtrl = {
         NOMBRE,
         NOEMPLEADO,
         direcciones,
+        role,
       });
       res.json({
         access_token,

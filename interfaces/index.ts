@@ -27,6 +27,7 @@ export interface IUserData {
   NOMBRE: string;
   NOEMPLEADO: string;
   direcciones: [];
+  role: string;
 }
 export interface IReqAuth extends Request {
   user?: IUserData;
