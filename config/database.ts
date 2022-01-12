@@ -10,7 +10,7 @@ const dbSettings = {
     trustServerCertificate: true,
   },
 };
-//Conexión a la base de datos
+//Conexión a la base de datos de VDBGAMA
 export async function getconectionVDBGAMA() {
   try {
     const pool = await sql.connect(dbSettings);
@@ -32,7 +32,7 @@ const dbSettings2 = {
   },
 };
 
-//Conexión a la base de datos
+//Conexión a la base de datos VDBDELTA
 export async function getconectionVDBDELTA() {
   try {
     const pool = await sql.connect(dbSettings2);
