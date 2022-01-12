@@ -34,7 +34,7 @@ const auth = async (req: IReqAuth, res: Response, next: NextFunction) => {
     };
     next();
   } catch (error: any) {
-    console.log(error.message);
+    console.log({ message: error.message });
     if (error.name === "TokenExpiredError") {
       return res.status(401).json({ message: "Please login now!" });
     }

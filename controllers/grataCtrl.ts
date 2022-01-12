@@ -190,40 +190,6 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  getPresupuestoGrata: async (req: Request, res: Response) => {
-    try {
-      const { periodo, idDireccion } = req.query;
-      const pool1 = await getconectionGratas();
-      if (pool1 === false) {
-        return res.status(400).json({ message: "No hay servicio" });
-      }
-      const result = await pool1.query(`USE GRATA
-      EXEC getPresupuestoGrata ${periodo},${idDireccion}`);
-      pool1.close();
-      res.status(200).json(result.recordsets[0][0]);
-    } catch (error: any) {
-      console.log({ message: error.message });
-      return res.status(500).json({ message: error.message });
-    }
-  },
-  getPresupuestoRealGrata: async (req: Request, res: Response) => {
-    try {
-      const { periodo, idDireccion } = req.query;
-      const pool1 = await getconectionGratas();
-      if (pool1 === false) {
-        return res.status(400).json({ message: "No hay servicio" });
-      }
-      const result = await pool1.query(`USE GRATA
-      SELECT p.presupuesto_Final FROM presupuestos p
-      INNER JOIN periodos per on p.id_Periodo = per.id_Periodo
-      where per.anio_periodo = ${periodo} and p.id_Direccion = ${idDireccion}`);
-      pool1.close();
-      res.status(200).json(result.recordsets[0][0]);
-    } catch (error: any) {
-      console.log({ message: error.message });
-      return res.status(500).json({ message: error.message });
-    }
-  },
   finishGrata: async (req: IReqAuth, res: Response) => {
     try {
       const { direccion, comentarios, anio } = req.body;
