@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { getconectionGratas, getconectionVDBDELTA } from "../config/database";
 
 const newGrata = async (
@@ -27,11 +26,8 @@ const newGrata = async (
     throw new Error("No hay conexión");
   }
   const data = JSON.stringify(recordsets[0]);
-  const timeElapsed = Date.now();
-  const today = new Date(timeElapsed);
-  const dateTime_Creacion = today.toISOString();
   const respondG = await pool.request().query(`USE GRATA
-        EXEC [dbo].[createNewGrata] '${data}','${direccion}','${anio}','${fecha_Inicio}','${fecha_Fin}','${presupuesto}','${dateTime_Creacion}'`);
+        EXEC [dbo].[createNewGrata] '${data}','${direccion}','${anio}','${fecha_Inicio}','${fecha_Fin}','${presupuesto}'`);
   const { recordsets: respond2 } = respondG;
   if (Object.keys(respond2).length === 0) {
     pool.close();
