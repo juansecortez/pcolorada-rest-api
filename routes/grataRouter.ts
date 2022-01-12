@@ -3,7 +3,7 @@ import grataCtrl from "../controllers/grataCtrl";
 import auth from "../middlewares/auth";
 const router = Router();
 
-router.post("/creategrata", grataCtrl.createGrata);
+router.post("/creategrata", auth, grataCtrl.createGrata);
 router.post("/validExistGrata", grataCtrl.validateExistGrata);
 router.get("/presupuesto", grataCtrl.getPresupuestoGrata);
 router.get("/presupuestoReal", grataCtrl.getPresupuestoRealGrata);
@@ -15,5 +15,6 @@ router.get("/authGrata", grataCtrl.getAuthGrata);
 router.get("/anios", grataCtrl.getYears);
 router.get("/getGratas", grataCtrl.getGratas);
 router.get("/getStatusGrata", grataCtrl.getStatusGrata);
+router.get("/getGrata", auth, grataCtrl.getGrata);
 
 export default router;
