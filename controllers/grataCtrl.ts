@@ -72,7 +72,7 @@ const grataController = {
       workers.map(async (worker) => {
         await sendEmail(
           `${worker.usuario_id}@pcolorada.com`,
-          `${process.env.URL_BASE_API}/Director`,
+          `${process.env.URL_CLIENT}/Director`,
           `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`,
           anio
         );
@@ -104,9 +104,9 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  getGrata: async (req: IReqAuth, res: Response) => {
-    if (!req.user)
-      return res.status(400).json({ message: "Invalid authentication." });
+  getGrata: async (req: Request, res: Response) => {
+    // if (!req.user)
+    //   return res.status(400).json({ message: "Invalid authentication." });
     try {
       const { year, idDirection }: any = req.query;
       const errors = [];
@@ -272,18 +272,14 @@ const grataController = {
   },
   getAuthGrata: async (req: Request, res: Response) => {
     try {
-      const { idDireccion, anio } = req.query;
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
-      select per.autorizacion_rh,per.autorizacion_general from direccion d
-      inner join presupuestos p on d.id = p.id_Direccion
-      inner join periodos per on p.id_Periodo = per.id_Periodo 
-      where d.id = ${idDireccion} and per.anio_periodo = ${anio}`);
+      EXEC [dbo].[getGratasPeriodo]`);
       pool1.close();
-      res.status(200).json(result.recordsets[0][0]);
+      res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
@@ -295,13 +291,13 @@ const grataController = {
       let n = 0;
       let year = new Date();
       let newYear = year.getFullYear();
-      let newyear = newYear - 1;
-      while (n < 5) {
+      let newyear = newYear - 3;
+      while (n < 8) {
         n++;
         anios.push({ anio: newyear++ });
       }
       const anioss = [{ anio: 2020 }];
-      res.json(anioss);
+      res.json(anios);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
