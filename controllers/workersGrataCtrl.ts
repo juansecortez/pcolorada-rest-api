@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getconectionGratas } from "../config/database";
-import { validateInsertBonoFinal } from "../utils/Validate";
+import { validateInsertBonoFinal, validateNumber } from "../utils/Validate";
+import { validExistGrata } from "../utils/validGrata";
 
 const workersController = {
   insertBonoFinalWorker: async (req: Request, res: Response) => {
@@ -10,7 +11,7 @@ const workersController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
-      const pool1 = await getconectionGratas();
+      let pool1 = await getconectionGratas();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -24,6 +25,11 @@ const workersController = {
           message: `No se encontro el empledo con el codigo: ${codigo_Empleado} en el año ${anio}`,
         });
       }
+      pool1.close();
+      pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
       await pool1.query(`USE GRATA
       UPDATE Trabajadores set bono_Final = ${bono_Final}, fecha_Actualizacion = CURRENT_TIMESTAMP
       where codigo_Empleado = ${codigo_Empleado} and anio = ${anio}`);
@@ -32,6 +38,102 @@ const workersController = {
         SELECT * FROM 
         Trabajadores where codigo_Empleado=${codigo_Empleado} and anio = ${anio}`
       );
+      pool1.close();
+      return res.json(result.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  updateWorkersBonoFinalAverage: async (req: Request, res: Response) => {
+    try {
+      const { idDirection, year } = req.body;
+      const errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año debe de ser numerico");
+      }
+      if (!validateNumber(idDirection)) {
+        errors.push("La dirección debe de ser numerica");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const valid = await validExistGrata(year);
+      if (valid.message === 0) {
+        return res
+          .status(403)
+          .json({ message: `No existe una grata con el periodo ${year}` });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC [dbo].[updateBonoFinalPromedio] ${idDirection}, ${year}`);
+      pool1.close();
+      return res.json(result.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  updateWorkersBonoFinalMax: async (req: Request, res: Response) => {
+    try {
+      const { idDirection, year } = req.body;
+      const errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año debe de ser numerico");
+      }
+      if (!validateNumber(idDirection)) {
+        errors.push("La dirección debe de ser numerica");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const valid = await validExistGrata(year);
+      if (valid.message === 0) {
+        return res
+          .status(403)
+          .json({ message: `No existe una grata con el periodo ${year}` });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC [dbo].[updateBonoFinalMaximo] ${idDirection}, ${year}`);
+      pool1.close();
+      return res.json(result.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  updateWorkersBonoFinalMin: async (req: Request, res: Response) => {
+    try {
+      const { idDirection, year } = req.body;
+      const errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año debe de ser numerico");
+      }
+      if (!validateNumber(idDirection)) {
+        errors.push("La dirección debe de ser numerica");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const valid = await validExistGrata(year);
+      if (valid.message === 0) {
+        return res
+          .status(403)
+          .json({ message: `No existe una grata con el periodo ${year}` });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC [dbo].[updateBonoFinalMinimo] ${idDirection}, ${year}`);
       pool1.close();
       return res.json(result.recordsets[0]);
     } catch (error: any) {
