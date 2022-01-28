@@ -18,7 +18,7 @@ const newGrata = async (
   const { recordsets } = respond;
   if (Object.keys(recordsets[0]).length === 0) {
     pool1.close();
-    throw new Error("Esa grata no existe");
+    throw new Error(`La grata del ${anio} no existe`);
   }
   pool1.close();
   const pool = await getconectionGratas();

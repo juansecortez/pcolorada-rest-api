@@ -13,6 +13,6 @@ router.get("/authGrata", grataCtrl.getAuthGrata);
 router.get("/anios", grataCtrl.getYears);
 router.get("/getGratas", grataCtrl.getGratas);
 router.get("/getStatusGrata", grataCtrl.getStatusGrata);
-router.get("/getGrata", auth, grataCtrl.getGrata);
+router.get("/getGrata", grataCtrl.getGrata);
 
 export default router;

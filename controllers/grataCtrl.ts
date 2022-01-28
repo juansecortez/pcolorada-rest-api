@@ -164,6 +164,16 @@ const grataController = {
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
+      const commentsGrata = await pool.query(`USE GRATA
+      SELECT p.comentarios FROM presupuestos p
+      INNER JOIN periodos per on p.id_Periodo = per.id_Periodo
+      where per.anio_periodo = ${year} and p.id_Direccion = ${idDirection}
+      `);
+      pool.close();
+      pool = await getconectionGratas();
+      if (pool === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
       const statusGrata = await pool.query(`USE GRATA
       EXEC [dbo].[getStatusGrata] ${year}, ${idDirection}`);
       pool.close();
@@ -179,6 +189,7 @@ const grataController = {
         periodGrata: parseInt(year),
         statusGrata: statusGrata.recordsets[0][0].estatus,
         budgetGrata: budgetGrata.recordsets[0][0].presupuesto,
+        commentsGrata: commentsGrata.recordsets[0][0].comentarios,
         actualBudgetGrata: actualBudgetGrata.recordsets[0][0].presupuesto_Final,
         totalWorkersByEvaluation: totalWorkersByEvaluation.recordsets[0],
         totalWorkersByPotential: totalWorkersByPotential.recordsets[0],
