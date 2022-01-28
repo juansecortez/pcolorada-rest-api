@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getconectionGratas } from "../config/database";
+import { getconectionGratas, getconectionVDBDELTA } from "../config/database";
 import { validateInsertBonoFinal, validateNumber } from "../utils/Validate";
 import { validExistGrata } from "../utils/validGrata";
 
@@ -153,6 +153,62 @@ const workersController = {
       );
       pool1.close();
       res.json(directions.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getWorkerHistory: async (req: Request, res: Response) => {
+    try {
+      const { codWorker } = req.body;
+      const errors = [];
+      if (!validateNumber(codWorker)) {
+        errors.push("El codigo de empleado debe ser numerico");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionVDBDELTA();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const workerHistory = await pool1.query(
+        `EXEC [dbo].[sp_obtenercalif_historial] ${codWorker} `
+      );
+      pool1.close();
+      res.json(workerHistory.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getWorkersByDirection: async (req: Request, res: Response) => {
+    try {
+      const { idDirection, year } = req.body;
+      let errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año debe de ser numerico");
+      }
+      if (!validateNumber(idDirection)) {
+        errors.push("La dirección debe de ser numerica");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const valid = await validExistGrata(year);
+      if (valid.message === 0) {
+        return res
+          .status(403)
+          .json({ message: `No existe una grata con el periodo ${year}` });
+      }
+      const pool1 = await getconectionGratas();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(`USE GRATA
+      EXEC [dbo].[getWorkersByDirection] ${idDirection}, ${year}`);
+      pool1.close();
+      return res.json(result.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });

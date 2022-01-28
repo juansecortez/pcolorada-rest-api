@@ -3,6 +3,8 @@ import workersGrataCtrl from "../controllers/workersGrataCtrl";
 const router = Router();
 
 router.post("/", workersGrataCtrl.insertBonoFinalWorker);
+router.post("/history", workersGrataCtrl.getWorkerHistory);
+router.post("/direction", workersGrataCtrl.getWorkersByDirection);
 router.get("/directions/user", workersGrataCtrl.getDirectionsByUserId);
 router.post("/bonoFinal/average", workersGrataCtrl.updateWorkersBonoFinalAverage);
 router.post("/bonoFinal/max", workersGrataCtrl.updateWorkersBonoFinalMax);
