@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { getconectionGratas } from "../config/database";
 import { IGrata, IReqAuth } from "../interfaces";
 import newGrata from "../utils/createGrata";
+import { getCurrentPeriod } from "../utils/getCurrentPeriod";
+import { getGrata } from "../utils/getGrata";
 import { sendEmail } from "../utils/sendEmail";
 import {
   validateAuthorizeGrata,
@@ -48,20 +50,46 @@ const grataController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
+      const period = await getCurrentPeriod();
+      if (Object.keys(period).length !== 0) {
+        return res.status(403).json({ message: "Existe un periodo vigente" });
+      }
       const valid = await validExistGrata(anio);
       if (valid.message === 1) {
         return res
           .status(403)
           .json({ message: `Ya existe una grata con el periodo ${anio}` });
       }
-      await newGrata(1, anio, fechaFin, fechaInicio, presupuestoRH);
-      await newGrata(2, anio, fechaFin, fechaInicio, presupuestoFinanzas);
-      await newGrata(3, anio, fechaFin, fechaInicio, presupuestoMinas);
-      await newGrata(4, anio, fechaFin, fechaInicio, presupuestoBeneficio);
-      await newGrata(5, anio, fechaFin, fechaInicio, presupuestoPelet);
-      await newGrata(6, anio, fechaFin, fechaInicio, presupuestoGeneral);
-      await newGrata(7, anio, fechaFin, fechaInicio, presupuestoTec);
-      await newGrata(8, anio, fechaFin, fechaInicio, presupuestoDirectores);
+      const jsonRH = await getGrata(1, anio);
+      const jsonFinanzas = await getGrata(2, anio);
+      const jsonMinas = await getGrata(3, anio);
+      const jsonBeneficio = await getGrata(4, anio);
+      const jsonPelet = await getGrata(5, anio);
+      const jsonGeneral = await getGrata(6, anio);
+      const jsonTec = await getGrata(7, anio);
+      const jsonDirecciones = await getGrata(8, anio);
+
+      await newGrata(
+        anio,
+        fechaFin,
+        fechaInicio,
+        jsonRH,
+        jsonFinanzas,
+        jsonMinas,
+        jsonBeneficio,
+        jsonPelet,
+        jsonGeneral,
+        jsonTec,
+        jsonDirecciones,
+        presupuestoRH,
+        presupuestoFinanzas,
+        presupuestoMinas,
+        presupuestoBeneficio,
+        presupuestoPelet,
+        presupuestoGeneral,
+        presupuestoTec,
+        presupuestoDirectores
+      );
       let pool1 = await getconectionGratas();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
@@ -72,10 +100,13 @@ const grataController = {
       workers.map(async (worker) => {
         await sendEmail(
           `${worker.usuario_id}@pcolorada.com`,
-          `${process.env.URL_CLIENT}/Director`,
-          `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`,
-          anio
-        );
+          `${process.env.URL_CLIENT}/login`,
+          `Periodo ${anio}`,
+          `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`
+        ).catch((error) => {
+          console.log({ message: error.message });
+          throw new Error("No se envio el correo");
+        });
       });
       pool1 = await getconectionGratas();
       if (pool1 === false) {
@@ -281,7 +312,7 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  getAuthGrata: async (req: Request, res: Response) => {
+  getPeriods: async (req: Request, res: Response) => {
     try {
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
@@ -345,6 +376,15 @@ const grataController = {
       where pre.id_Direccion = ${idDireccion} and p.anio_periodo = ${periodo}`);
       pool1.close();
       res.status(200).json(result.recordsets[0][0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getCurrentPeriod: async (req: Request, res: Response) => {
+    try {
+      const data = await getCurrentPeriod();
+      res.status(200).json(data);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
