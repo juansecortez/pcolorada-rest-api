@@ -205,8 +205,9 @@ const workersController = {
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
+      
       const result = await pool1.query(`USE GRATA
-      EXEC [dbo].[getWorkersByDirection] ${idDirection}, ${year}`);
+      SELECT * FROM Trabajadores WHERE anio = ${year} and id_direccion = ${idDirection}`);
       pool1.close();
       return res.json(result.recordsets[0]);
     } catch (error: any) {
