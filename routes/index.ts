@@ -7,7 +7,7 @@ const routes = {
   grataRouter,
   authRouter,
   workersGrataRouter,
-  periodRouter
+  periodRouter,
 };
 
 export default routes;
