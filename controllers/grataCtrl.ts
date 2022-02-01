@@ -3,7 +3,6 @@ import { getconectionGratas } from "../config/database";
 import { IGrata, IReqAuth } from "../interfaces";
 import newGrata from "../utils/createGrata";
 import { getCurrentPeriod } from "../utils/getCurrentPeriod";
-import { getGrata } from "../utils/getGrata";
 import { sendEmail } from "../utils/sendEmail";
 import {
   validateAuthorizeGrata,
@@ -58,29 +57,13 @@ const grataController = {
       if (valid.message === 1) {
         return res
           .status(403)
-          .json({ message: `Ya existe una grata con el periodo ${anio}` });
+          .json({ message: `Ya existe un periodo con el año ${anio}` });
       }
-      const jsonRH = await getGrata(1, anio);
-      const jsonFinanzas = await getGrata(2, anio);
-      const jsonMinas = await getGrata(3, anio);
-      const jsonBeneficio = await getGrata(4, anio);
-      const jsonPelet = await getGrata(5, anio);
-      const jsonGeneral = await getGrata(6, anio);
-      const jsonTec = await getGrata(7, anio);
-      const jsonDirecciones = await getGrata(8, anio);
 
       await newGrata(
         anio,
         fechaFin,
         fechaInicio,
-        jsonRH,
-        jsonFinanzas,
-        jsonMinas,
-        jsonBeneficio,
-        jsonPelet,
-        jsonGeneral,
-        jsonTec,
-        jsonDirecciones,
         presupuestoRH,
         presupuestoFinanzas,
         presupuestoMinas,
@@ -119,7 +102,7 @@ const grataController = {
       pool1.close();
       return res
         .status(201)
-        .json({ message: "Gratas creadas correctamente", workersGrata });
+        .json({ message: "Periodo creado correctamente", workersGrata });
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(400).json({ message: error.message });
@@ -154,7 +137,7 @@ const grataController = {
       if (valid.message === 0) {
         return res
           .status(403)
-          .json({ message: `No existe una grata con el periodo ${year}` });
+          .json({ message: `El periodo no esta disponible ${year}` });
       }
       let pool = await getconectionGratas();
       if (pool === false) {
@@ -216,6 +199,18 @@ const grataController = {
       SELECT * FROM Trabajadores WHERE anio = ${year} and id_direccion = ${idDirection}`);
       pool.close();
 
+      pool = await getconectionGratas();
+      if (pool === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const data = await pool.query(`USE GRATA
+      EXEC [dbo].[promedioMatriz] ${idDirection},${year}`);
+      const result: any = data.recordsets;
+      let averagePeriod: number[] = [];
+      result[0].map((element: any) => {
+        averagePeriod = [...averagePeriod, element.promedio];
+      });
+      pool.close();
       res.status(200).json({
         periodGrata: parseInt(year),
         statusGrata: statusGrata.recordsets[0][0].estatus,
@@ -226,6 +221,7 @@ const grataController = {
         totalWorkersByPotential: totalWorkersByPotential.recordsets[0],
         totalWorkersByQualification: totalWorkersByQualification.recordsets[0],
         workersGrata: workersGrata.recordsets[0],
+        averagePeriod: averagePeriod,
       });
     } catch (error: any) {
       console.log({ message: error.message });
@@ -282,36 +278,6 @@ const grataController = {
       return res.status(500).json({ message: error.message });
     }
   },
-  authorizeGrata: async (req: Request, res: Response) => {
-    try {
-      const { anio, idDireccion, tipoAutorizacion, direccionAutorizacion } =
-        req.body;
-      const errors = validateAuthorizeGrata(
-        anio,
-        idDireccion,
-        tipoAutorizacion,
-        direccionAutorizacion
-      );
-      if (errors.length > 0) {
-        return res.status(400).json({ message: errors });
-      }
-      const pool1 = await getconectionGratas();
-      if (pool1 === false) {
-        return res.status(400).json({ message: "No hay servicio" });
-      }
-      const result = await pool1.query(`USE GRATA
-      [dbo].[autorizarGrata]
-      @anio = ${anio},
-      @direccion = ${idDireccion},
-      @direccion_autorizacion = ${direccionAutorizacion},
-      @tipo_autorizacion = ${tipoAutorizacion}`);
-      pool1.close();
-      res.status(200).json({ message: result.recordsets[0][0].msg });
-    } catch (error: any) {
-      console.log({ message: error.message });
-      return res.status(500).json({ message: error.message });
-    }
-  },
   getPeriods: async (req: Request, res: Response) => {
     try {
       const pool1 = await getconectionGratas();
@@ -319,7 +285,9 @@ const grataController = {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
-      EXEC [dbo].[getGratasPeriodo]`);
+      select sum(pre.presupuesto)as presupuesto,p.anio_periodo,sum(pre.presupuesto_Final)as presupuesto_Real,p.estatus from periodos p
+      inner join presupuestos pre on p.id_Periodo = pre.id_Periodo
+      group by p.anio_periodo , p.estatus`);
       pool1.close();
       res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
@@ -340,24 +308,6 @@ const grataController = {
       }
       const anioss = [{ anio: 2020 }];
       res.json(anios);
-    } catch (error: any) {
-      console.log({ message: error.message });
-      return res.status(500).json({ message: error.message });
-    }
-  },
-  getGratas: async (req: Request, res: Response) => {
-    try {
-      const pool1 = await getconectionGratas();
-      if (pool1 === false) {
-        return res.status(400).json({ message: "No hay servicio" });
-      }
-      const result = await pool1.query(`USE GRATA
-      select d.nombre_direccion,pre.presupuesto,pre.presupuesto_Final,
-      p.anio_periodo from direccion d
-      inner join presupuestos pre on d.id = pre.id_Direccion
-      inner join periodos p on pre.id_Periodo = p.id_Periodo`);
-      pool1.close();
-      res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
