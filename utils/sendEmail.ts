@@ -13,7 +13,7 @@ export const sendEmail = async (
   const SMTP_HOST = `${process.env.SMTP_HOST}`;
   var transport = nodemailer.createTransport({
     host: `${SMTP_HOST}`,
-    port: 25,
+    port: 2525,
     tls: {
       rejectUnauthorized: false,
     },
