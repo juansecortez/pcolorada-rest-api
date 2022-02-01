@@ -126,7 +126,7 @@ const authCtrl = {
       res.cookie("refreshtoken", refresh_token, {
         httpOnly: true,
         path: "/api/v1/auth/refresh_token",
-        maxAge: 172_800_000, //  Dos dias
+        maxAge: 7_200_000, //  Dos horas
       });
       res.json({
         message: "Login Success!",
