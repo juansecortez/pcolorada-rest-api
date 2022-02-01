@@ -30,6 +30,7 @@ app.use("/api/v1/docs", swaggerUI.serve, swaggerUI.setup(jsonSwagger));
 app.use("/api/v1/grata", routes.grataRouter);
 app.use("/api/v1/workers", routes.workersGrataRouter);
 app.use("/api/v1/auth", routes.authRouter);
+app.use("/api/v1/period", routes.periodRouter);
 
 //Server listening
 const PORT = process.env.PORT || 5000;
