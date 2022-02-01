@@ -32,3 +32,11 @@ export interface IUserData {
 export interface IReqAuth extends Request {
   user?: IUserData;
 }
+export interface IUser {
+  usuario_id: string;
+  nombre: string;
+  role: string;
+}
+export interface IUserDirection extends IUser {
+  id_direccion: number;
+}
