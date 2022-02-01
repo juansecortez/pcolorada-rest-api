@@ -9,10 +9,11 @@ router.post("/finish", grataCtrl.finishGrata);
 router.post("/direcciones", grataCtrl.getDirecciones);
 router.get("/aniosGrata", grataCtrl.getAnios);
 router.post("/authGrata", grataCtrl.authorizeGrata);
-router.get("/authGrata", grataCtrl.getAuthGrata);
+router.get("/getPeriods", grataCtrl.getPeriods);
 router.get("/anios", grataCtrl.getYears);
 router.get("/getGratas", grataCtrl.getGratas);
 router.get("/getStatusGrata", grataCtrl.getStatusGrata);
 router.get("/getGrata", grataCtrl.getGrata);
+router.get("/currentPeriod", grataCtrl.getCurrentPeriod);
 
 export default router;
