@@ -62,7 +62,7 @@ const workersController = {
       if (valid.message === 0) {
         return res
           .status(403)
-          .json({ message: `No existe una grata con el periodo ${year}` });
+          .json({ message: `No existe una periodo con el año ${year}` });
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
@@ -94,7 +94,7 @@ const workersController = {
       if (valid.message === 0) {
         return res
           .status(403)
-          .json({ message: `No existe una grata con el periodo ${year}` });
+          .json({ message: `No existe una periodo con el año ${year}` });
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
@@ -126,7 +126,7 @@ const workersController = {
       if (valid.message === 0) {
         return res
           .status(403)
-          .json({ message: `No existe una grata con el periodo ${year}` });
+          .json({ message: `No existe un periodo con el año ${year}` });
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
@@ -199,7 +199,7 @@ const workersController = {
       if (valid.message === 0) {
         return res
           .status(403)
-          .json({ message: `No existe una grata con el periodo ${year}` });
+          .json({ message: `No existe un periodo con el año ${year}` });
       }
       const pool1 = await getconectionGratas();
       if (pool1 === false) {
