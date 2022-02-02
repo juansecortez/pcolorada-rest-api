@@ -8,6 +8,9 @@ import swaggerUI from "swagger-ui-express";
 import morgan from "morgan";
 import routes from "./routes";
 import jsonSwagger from "./assets/swagger.json";
+import fileUpload from 'express-fileupload';
+;
+
 
 //Middleware
 const app = express();
@@ -21,6 +24,7 @@ app.use(
 );
 app.use(morgan("dev"));
 app.use(cookieParser());
+app.use(fileUpload({}));
 
 //Routes
 app.get("/api/v1", (req, res) => {

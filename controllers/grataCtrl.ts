@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
-import { getconectionGratas } from "../config/database";
-import { IGrata, IReqAuth } from "../interfaces";
+import { UploadedFile } from "express-fileupload";
+import { getconectionVDBGAMA } from "../config/database";
+import { IDataExcel, IGrata, IReqAuth } from "../interfaces";
 import newGrata from "../utils/createGrata";
 import { getCurrentPeriod } from "../utils/getCurrentPeriod";
+import { readExcel } from "../utils/readExcel";
 import { sendEmail } from "../utils/sendEmail";
-import {
-  validateAuthorizeGrata,
-  validateGrata,
-  validateNumber,
-} from "../utils/Validate";
+import { validateGrata, validateNumber } from "../utils/Validate";
 import { validExistGrata } from "../utils/validGrata";
 
 const grataController = {
@@ -33,6 +31,19 @@ const grataController = {
         fechaInicio,
         fechaFin,
       }: IGrata = req.body;
+      console.log({
+        presupuestoFinanzas,
+        presupuestoMinas,
+        presupuestoPelet,
+        presupuestoRH,
+        presupuestoGeneral,
+        presupuestoBeneficio,
+        presupuestoTec,
+        presupuestoDirectores,
+        anio,
+        fechaInicio,
+        fechaFin,
+      });
       const errors = validateGrata(
         presupuestoFinanzas,
         presupuestoMinas,
@@ -59,7 +70,30 @@ const grataController = {
           .status(403)
           .json({ message: `Ya existe un periodo con el año ${anio}` });
       }
-
+      // Excel
+      console.log(req.files);
+      if (!req.files || Object.keys(req.files).length === 0) {
+        res.status(400).json({ message: "El archivo excel es requerido" });
+        return;
+      }
+      let files: any = req.files;
+      let sampleFile: UploadedFile = files.file;
+      let uploadPath = "uploads/" + sampleFile.name;
+      await sampleFile.mv(uploadPath).catch((error) => {
+        res.status(500).json({ message: error.message });
+      });
+      const dataExcel: IDataExcel[] = readExcel(uploadPath);
+      dataExcel.map(async (data) => {
+        const pool1 = await getconectionVDBGAMA();
+        if (pool1 === false) {
+          return res.status(400).json({ message: "No hay servicio" });
+        }
+        await pool1.query(`USE GRATA
+            insert into SalariosMensuales (codigo, salariomensual, anio) 
+            values(${data.codigo},${data.salariomensual},${anio})`);
+        pool1.close();
+      });
+      // Excel
       await newGrata(
         anio,
         fechaFin,
@@ -73,7 +107,7 @@ const grataController = {
         presupuestoTec,
         presupuestoDirectores
       );
-      let pool1 = await getconectionGratas();
+      let pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -91,7 +125,7 @@ const grataController = {
           throw new Error("No se envio el correo");
         });
       });
-      pool1 = await getconectionGratas();
+      pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -100,9 +134,7 @@ const grataController = {
       `);
       const workersGrata = result2.recordsets[0];
       pool1.close();
-      return res
-        .status(201)
-        .json({ message: "Periodo creado correctamente", workersGrata });
+      return res.status(201).json({ message: "Periodo creado correctamente" });
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(400).json({ message: error.message });
@@ -139,42 +171,42 @@ const grataController = {
           .status(403)
           .json({ message: `El periodo no esta disponible ${year}` });
       }
-      let pool = await getconectionGratas();
+      let pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const totalWorkersByEvaluation = await pool.query(`USE GRATA
       EXEC [dbo].[workersTotEvaluated] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const totalWorkersByPotential = await pool.query(`USE GRATA
       EXEC [dbo].[workersTotByPotential] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const totalWorkersByQualification = await pool.query(`USE GRATA
       EXEC [dbo].[workersTotByCalf] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const budgetGrata = await pool.query(`USE GRATA
       EXEC [dbo].[getPresupuestoGrata] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const actualBudgetGrata = await pool.query(`USE GRATA
       EXEC [dbo].[getActualBudgetGrata] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -184,14 +216,14 @@ const grataController = {
       where per.anio_periodo = ${year} and p.id_Direccion = ${idDirection}
       `);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const statusGrata = await pool.query(`USE GRATA
       EXEC [dbo].[getStatusGrata] ${year}, ${idDirection}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -199,7 +231,7 @@ const grataController = {
       SELECT * FROM Trabajadores WHERE anio = ${year} and id_direccion = ${idDirection}`);
       pool.close();
 
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -231,7 +263,7 @@ const grataController = {
   finishGrata: async (req: IReqAuth, res: Response) => {
     try {
       const { direccion, comentarios, anio } = req.body;
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -247,7 +279,7 @@ const grataController = {
   getDirecciones: async (req: Request, res: Response) => {
     try {
       const { anio } = req.body;
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -265,7 +297,7 @@ const grataController = {
   },
   getAnios: async (req: Request, res: Response) => {
     try {
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -280,7 +312,7 @@ const grataController = {
   },
   getPeriods: async (req: Request, res: Response) => {
     try {
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -316,7 +348,7 @@ const grataController = {
   getStatusGrata: async (req: Request, res: Response) => {
     try {
       const { idDireccion, periodo } = req.query;
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }

@@ -1,7 +1,7 @@
-import { getconectionGratas } from "../config/database";
+import { getconectionVDBGAMA } from "../config/database";
 
 export const validExistGrata = async (anio: number) => {
-  const pool = await getconectionGratas();
+  const pool = await getconectionVDBGAMA();
   if (pool === false) {
     return;
   }

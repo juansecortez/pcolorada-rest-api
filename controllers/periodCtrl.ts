@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getconectionGratas } from "../config/database";
+import { getconectionVDBGAMA } from "../config/database";
 import { IUserDirection } from "../interfaces";
 import { sendEmail } from "../utils/sendEmail";
 import { validateNumber } from "../utils/Validate";
@@ -22,25 +22,25 @@ const periodController = {
           .status(403)
           .json({ message: `No existe el periodo ${year}` });
       }
-      let pool = await getconectionGratas();
+      let pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const totalWorkersByPotential = await pool.query(`USE GRATA
     EXEC [dbo].[workersTotByPotentialPeriod] ${year}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const totalWorkersByQualification = await pool.query(`USE GRATA
       EXEC [dbo].[workersTotByCalfPeriod] ${year}`);
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -52,7 +52,7 @@ const periodController = {
       const { recordsets } = result;
       const { presupuesto, presupuesto_Real } = recordsets[0][0];
       pool.close();
-      pool = await getconectionGratas();
+      pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -64,7 +64,7 @@ const periodController = {
         averagePeriod = [...averagePeriod, element.promedio];
       });
       pool.close();
-      res.status(200).json({
+      return res.status(200).json({
         periodPeriod: parseInt(year),
         budgetPeriod: presupuesto,
         actualBudgetPeriod: presupuesto_Real,
@@ -96,14 +96,14 @@ const periodController = {
           .status(403)
           .json({ message: `No existe el periodo ${year}` });
       }
-      let pool = await getconectionGratas();
+      let pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       if (estatus === 0) {
         return res.status(403).json({ message: "Pendiente de finalizar" });
       } else if (estatus === 1) {
-        pool = await getconectionGratas();
+        pool = await getconectionVDBGAMA();
         if (pool === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
@@ -127,7 +127,7 @@ const periodController = {
           message: "Periodo enviado para autorización recursos humanos",
         });
       } else if (estatus === 2) {
-        pool = await getconectionGratas();
+        pool = await getconectionVDBGAMA();
         if (pool === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
@@ -135,7 +135,7 @@ const periodController = {
         update periodos set estatus = 2 where anio_periodo = ${year}
         `);
         pool.close();
-        pool = await getconectionGratas();
+        pool = await getconectionVDBGAMA();
         if (pool === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
@@ -159,7 +159,7 @@ const periodController = {
           .status(200)
           .json({ message: "Periodo enviado para autorización" });
       } else if (estatus === 3) {
-        pool = await getconectionGratas();
+        pool = await getconectionVDBGAMA();
         if (pool === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
@@ -184,14 +184,14 @@ const periodController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(`USE GRATA
       select anio_periodo from periodos where estatus = ${estatus}`);
       pool1.close();
-      res.status(200).json(result.recordsets[0]);
+      return res.status(200).json(result.recordsets[0]);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });
@@ -207,7 +207,10 @@ const periodController = {
       if (!validateNumber(year)) {
         errors.push("El año de ser numérico");
       }
-      const pool1 = await getconectionGratas();
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -219,7 +222,56 @@ const periodController = {
         averagePeriod = [...averagePeriod, element.promedio];
       });
       pool1.close();
-      res.status(200).json(averagePeriod);
+      return res.status(200).json(averagePeriod);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  sendEmailPeriod: async (req: Request, res: Response) => {
+    try {
+      const { year }: any = req.body;
+      const errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año de ser numérico");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionVDBGAMA();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      await pool1.query(`EXEC [dbo].[EnvioCorreoBono] ${year}`);
+      pool1.close();
+      return res
+        .status(200)
+        .json({ message: "Correos enviados a todos los trabajadores" });
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getWorkersByPeriod: async (req: Request, res: Response) => {
+    try {
+      const { year }: any = req.body;
+      const errors = [];
+      if (!validateNumber(year)) {
+        errors.push("El año de ser numérico");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+      const pool1 = await getconectionVDBGAMA();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+      const result = await pool1.query(
+        `EXEC [dbo].[getWorkersByPeriod] ${year}`
+      );
+      const workersData = result.recordsets;
+      pool1.close();
+      return res.status(200).json(workersData);
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(500).json({ message: error.message });

@@ -6,7 +6,7 @@ import {
 } from "../config/generateToken";
 import jwt from "jsonwebtoken";
 import { IDecodeToken, IUserData } from "../interfaces";
-import { getconectionGratas } from "../config/database";
+import { getconectionVDBGAMA } from "../config/database";
 
 const authCtrl = {
   logout: async (req: Request, res: Response) => {
@@ -65,7 +65,7 @@ const authCtrl = {
   loginSOAP: async (req: Request, res: Response) => {
     const { username, password } = req.body;
     try {
-      const pool2 = await getconectionGratas();
+      const pool2 = await getconectionVDBGAMA();
       if (pool2 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -98,7 +98,7 @@ const authCtrl = {
       }
       const user: IUserData = result.data[0];
       const { USUARIOID, NOMBRE, NOEMPLEADO } = user;
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }

@@ -1,7 +1,7 @@
-import { getconectionGratas } from "../config/database";
+import { getconectionVDBGAMA } from "../config/database";
 
 export const getCurrentPeriod = async () => {
-  const pool1 = await getconectionGratas();
+  const pool1 = await getconectionVDBGAMA();
   if (pool1 === false) {
     throw new Error("No hay conexión");
   }

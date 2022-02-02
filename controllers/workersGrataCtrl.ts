@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getconectionGratas, getconectionVDBDELTA } from "../config/database";
+import {  getconectionVDBGAMA } from "../config/database";
 import { validateInsertBonoFinal, validateNumber } from "../utils/Validate";
 import { validExistGrata } from "../utils/validGrata";
 
@@ -11,7 +11,7 @@ const workersController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
-      let pool1 = await getconectionGratas();
+      let pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -26,7 +26,7 @@ const workersController = {
         });
       }
       pool1.close();
-      pool1 = await getconectionGratas();
+      pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -64,7 +64,7 @@ const workersController = {
           .status(403)
           .json({ message: `No existe una periodo con el año ${year}` });
       }
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -96,7 +96,7 @@ const workersController = {
           .status(403)
           .json({ message: `No existe una periodo con el año ${year}` });
       }
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -128,7 +128,7 @@ const workersController = {
           .status(403)
           .json({ message: `No existe un periodo con el año ${year}` });
       }
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -144,7 +144,7 @@ const workersController = {
   getDirectionsByUserId: async (req: Request, res: Response) => {
     try {
       const { userId } = req.query;
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -168,7 +168,7 @@ const workersController = {
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
       }
-      const pool1 = await getconectionVDBDELTA();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
@@ -201,7 +201,7 @@ const workersController = {
           .status(403)
           .json({ message: `No existe un periodo con el año ${year}` });
       }
-      const pool1 = await getconectionGratas();
+      const pool1 = await getconectionVDBGAMA();
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }

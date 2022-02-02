@@ -1,4 +1,4 @@
-import { getconectionGratas } from "../config/database";
+import { getconectionVDBGAMA } from "../config/database";
 
 const newGrata = async (
   anio: number,
@@ -13,7 +13,7 @@ const newGrata = async (
   presupuestoTec: number,
   presupuestoDirectores: number
 ) => {
-  const pool = await getconectionGratas();
+  const pool = await getconectionVDBGAMA();
   if (pool === false) {
     throw new Error("No hay conexión");
   }

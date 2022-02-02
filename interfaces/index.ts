@@ -40,3 +40,7 @@ export interface IUser {
 export interface IUserDirection extends IUser {
   id_direccion: number;
 }
+export interface IDataExcel {
+  codigo: number;
+  salariomensual: number;
+}
