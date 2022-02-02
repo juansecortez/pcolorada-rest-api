@@ -9,8 +9,6 @@ import morgan from "morgan";
 import routes from "./routes";
 import jsonSwagger from "./assets/swagger.json";
 import fileUpload from 'express-fileupload';
-;
-
 
 //Middleware
 const app = express();
@@ -18,7 +16,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: "*",
     credentials: true,
   })
 );
