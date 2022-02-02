@@ -173,7 +173,7 @@ const workersController = {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const workerHistory = await pool1.query(
-        `EXEC [dbo].[sp_obtenercalif_historial] ${codWorker} `
+        `USE GRATA EXEC [dbo].[sp_obtenercalif_historial] ${codWorker} `
       );
       pool1.close();
       res.json(workerHistory.recordsets[0]);

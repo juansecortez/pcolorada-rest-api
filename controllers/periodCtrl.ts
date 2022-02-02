@@ -242,7 +242,7 @@ const periodController = {
       if (pool1 === false) {
         return res.status(400).json({ message: "No hay servicio" });
       }
-      await pool1.query(`EXEC [dbo].[EnvioCorreoBono] ${year}`);
+      await pool1.query(`USE GRATA EXEC [dbo].[EnvioCorreoBono] ${year}`);
       pool1.close();
       return res
         .status(200)
