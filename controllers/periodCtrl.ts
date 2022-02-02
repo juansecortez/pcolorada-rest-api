@@ -267,7 +267,7 @@ const periodController = {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const result = await pool1.query(
-        `EXEC [dbo].[getWorkersByPeriod] ${year}`
+        `USE GRATA EXEC [dbo].[getWorkersByPeriod] ${year}`
       );
       const workersData = result.recordsets;
       pool1.close();
