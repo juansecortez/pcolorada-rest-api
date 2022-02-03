@@ -115,7 +115,7 @@ const periodController = {
         const user: IUserDirection = data[0];
         await sendEmail(
           `${user.usuario_id}@pcolorada.com`,
-          `${process.env.URL_CLIENT}/login`,
+          `http://vwebgama:5002/login`,
           `Autorizar periodo de asignación ${year}`,
           `Autorizar periodo de asignación ${year}`
         ).catch((error) => {
@@ -124,7 +124,7 @@ const periodController = {
         });
         pool.close();
         return res.status(200).json({
-          message: "Periodo enviado para autorización recursos humanos",
+          message: "Periodo enviado para autorización dirección de recursos humanos",
         });
       } else if (estatus === 2) {
         pool = await getconectionVDBGAMA();
@@ -147,7 +147,7 @@ const periodController = {
         const user: IUserDirection = data[0];
         await sendEmail(
           `${user.usuario_id}@pcolorada.com`,
-          `${process.env.URL_CLIENT}/login`,
+          `http://vwebgama:5002/login`,
           `Autorizar periodo de asignación ${year}`,
           `Autorizar periodo de asignación ${year}`
         ).catch((error) => {
@@ -157,15 +157,36 @@ const periodController = {
         pool.close();
         return res
           .status(200)
-          .json({ message: "Periodo enviado para autorización" });
+          .json({ message: "Periodo enviado para autorización dirección general" });
       } else if (estatus === 3) {
         pool = await getconectionVDBGAMA();
         if (pool === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
-        const result = await pool.query(`USE GRATA
+        await pool.query(`USE GRATA
         update periodos set estatus = 3 where anio_periodo = ${year}
         `);
+        pool.close();
+
+        pool = await getconectionVDBGAMA();
+        if (pool === false) {
+          return res.status(400).json({ message: "No hay servicio" });
+        }
+        const resul = await pool.query(`USE GRATA
+        select * from usuarios u
+        inner join usuarios_direcciones ud on u.usuario_id = ud.id_usuario
+        where ud.id_direccion = 1`);
+        const data = resul.recordsets[0];
+        const user: IUserDirection = data[0];
+        await sendEmail(
+          `${user.usuario_id}@pcolorada.com`,
+          `http://vwebgama:5002/login`,
+          `Autorizar periodo de asignación ${year}`,
+          `El proceso de bono del ${year} ha sido autorizado por dirección general y dirección de recursos humanos`
+        ).catch((error) => {
+          console.log({ message: error.message });
+          throw new Error("No se envio el correo");
+        });
         pool.close();
         return res.status(200).json({ message: "Periodo autorizado" });
       }

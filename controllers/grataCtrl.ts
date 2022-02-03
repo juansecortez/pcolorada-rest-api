@@ -84,7 +84,7 @@ const grataController = {
       });
       const dataExcel: IDataExcel[] = readExcel(uploadPath);
       dataExcel.map(async (data) => {
-        const pool1 = await getconectionVDBGAMA();
+        let pool1 = await getconectionVDBGAMA();
         if (pool1 === false) {
           return res.status(400).json({ message: "No hay servicio" });
         }
@@ -117,7 +117,7 @@ const grataController = {
       workers.map(async (worker) => {
         await sendEmail(
           `${worker.usuario_id}@pcolorada.com`,
-          `${process.env.URL_CLIENT}/login`,
+          `http://vwebgama:5002/login`,
           `Periodo ${anio}`,
           `Inicia el proceso de asignación de bono por desempeño del periodo ${anio}`
         ).catch((error) => {
