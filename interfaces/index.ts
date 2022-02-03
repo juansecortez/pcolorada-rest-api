@@ -43,4 +43,5 @@ export interface IUserDirection extends IUser {
 export interface IDataExcel {
   codigo: number;
   salariomensual: number;
+  bonoanterior: number;
 }

@@ -89,8 +89,8 @@ const grataController = {
           return res.status(400).json({ message: "No hay servicio" });
         }
         await pool1.query(`USE GRATA
-            insert into SalariosMensuales (codigo, salariomensual, anio) 
-            values(${data.codigo},${data.salariomensual},${anio})`);
+            insert into SalariosMensuales (codigo, salariomensual, bonoanterior, anio) 
+            values(${data.codigo},${data.salariomensual},${data.bonoanterior},${anio})`);
         pool1.close();
       });
       // Excel
