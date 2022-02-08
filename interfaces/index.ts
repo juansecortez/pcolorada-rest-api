@@ -21,6 +21,7 @@ export interface IGrata {
   anio: number;
   fechaFin: string;
   fechaInicio: string;
+  dataExcel: IDataExcel[];
 }
 export interface IUserData {
   USUARIOID: string;

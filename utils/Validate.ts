@@ -1,3 +1,5 @@
+import { IDataExcel } from "../interfaces";
+
 export const validateInsertBonoFinal = (
   codigo_Empleado: number,
   bono_Final: number,
@@ -44,7 +46,8 @@ export const validateGrata = (
   presupuestoDirectores: number,
   anio: number,
   fechaFin: string,
-  fechaInicio: string
+  fechaInicio: string,
+  dataExcel: IDataExcel[]
 ): string[] => {
   const errors = [];
   if (!anio) {
@@ -116,7 +119,9 @@ export const validateGrata = (
   } else if (typeof fechaInicio !== "string") {
     errors.push("La fecha inicio tiene que ser string");
   }
-
+  if (Object.keys(dataExcel).length === 0) {
+    errors.push("El archivo de excel esta vacio");
+  }
   return errors;
 };
 export const validateAuthorizeGrata = (

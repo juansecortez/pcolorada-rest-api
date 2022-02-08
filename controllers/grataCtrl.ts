@@ -4,6 +4,7 @@ import { getconectionVDBGAMA } from "../config/database";
 import { IDataExcel, IGrata, IReqAuth } from "../interfaces";
 import newGrata from "../utils/createGrata";
 import { getCurrentPeriod } from "../utils/getCurrentPeriod";
+import { insertSalary } from "../utils/insertSalary";
 import { readExcel } from "../utils/readExcel";
 import { sendEmail } from "../utils/sendEmail";
 import { validateGrata, validateNumber } from "../utils/Validate";
@@ -30,6 +31,7 @@ const grataController = {
         anio,
         fechaInicio,
         fechaFin,
+        dataExcel,
       }: IGrata = req.body;
       console.log({
         presupuestoFinanzas,
@@ -43,6 +45,7 @@ const grataController = {
         anio,
         fechaInicio,
         fechaFin,
+        dataExcel,
       });
       const errors = validateGrata(
         presupuestoFinanzas,
@@ -55,14 +58,11 @@ const grataController = {
         presupuestoDirectores,
         anio,
         fechaInicio,
-        fechaFin
+        fechaFin,
+        dataExcel
       );
       if (errors.length > 0) {
         return res.status(400).json({ message: errors });
-      }
-      const period = await getCurrentPeriod();
-      if (Object.keys(period).length !== 0) {
-        return res.status(403).json({ message: "Existe un periodo vigente" });
       }
       const valid = await validExistGrata(anio);
       if (valid.message === 1) {
@@ -70,30 +70,24 @@ const grataController = {
           .status(403)
           .json({ message: `Ya existe un periodo con el año ${anio}` });
       }
-      // Excel
-      console.log(req.files);
-      if (!req.files || Object.keys(req.files).length === 0) {
-        res.status(400).json({ message: "El archivo excel es requerido" });
-        return;
+      dataExcel.map((data) => {
+        insertSalary(data, anio).catch((error) => {
+          throw new Error(error);
+        });
+      });
+      let pool = await getconectionVDBGAMA();
+      if (pool === false) {
+        throw new Error("No hay conexión");
       }
-      let files: any = req.files;
-      let sampleFile: UploadedFile = files.file;
-      let uploadPath = "uploads/" + sampleFile.name;
-      await sampleFile.mv(uploadPath).catch((error) => {
-        res.status(500).json({ message: error.message });
-      });
-      const dataExcel: IDataExcel[] = readExcel(uploadPath);
-      dataExcel.map(async (data) => {
-        let pool1 = await getconectionVDBGAMA();
-        if (pool1 === false) {
-          return res.status(400).json({ message: "No hay servicio" });
-        }
-        await pool1.query(`USE GRATA
-            insert into SalariosMensuales (codigo, salariomensual, bonoanterior, anio) 
-            values(${data.codigo},${data.salariomensual},${data.bonoanterior},${anio})`);
-        pool1.close();
-      });
-      // Excel
+      const response = await pool.request().query(
+        `USE GRATA
+      EXEC [dbo].[SumInsertados_Salarios] ${anio}`
+      );
+      const { recordsets } = response;
+      console.log();
+      pool.close();
+      let message = [];
+      message.push(recordsets[0][0].total);
       await newGrata(
         anio,
         fechaFin,
@@ -134,7 +128,8 @@ const grataController = {
       `);
       const workersGrata = result2.recordsets[0];
       pool1.close();
-      return res.status(201).json({ message: "Periodo creado correctamente" });
+      message.push("Periodo creado correctamente");
+      return res.status(201).json({ message });
     } catch (error: any) {
       console.log({ message: error.message });
       return res.status(400).json({ message: error.message });
