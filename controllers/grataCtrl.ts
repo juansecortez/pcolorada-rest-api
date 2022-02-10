@@ -223,7 +223,7 @@ const grataController = {
         return res.status(400).json({ message: "No hay servicio" });
       }
       const workersGrata = await pool.query(`USE GRATA
-      EXEC [dbo].[getWorkersByDirection] ${year}, ${idDirection}`);
+      EXEC [dbo].[getWorkersByDirection] ${idDirection}, ${year}`);
       pool.close();
 
       pool = await getconectionVDBGAMA();
