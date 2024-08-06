@@ -1,0 +1,20 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const grataCtrl_1 = __importDefault(require("../controllers/grataCtrl"));
+const auth_1 = __importDefault(require("../middlewares/auth"));
+const router = (0, express_1.Router)();
+router.post("/creategrata", auth_1.default, grataCtrl_1.default.createGrata);
+router.post("/validExistGrata", grataCtrl_1.default.validateExistGrata);
+router.post("/finish", auth_1.default, grataCtrl_1.default.finishGrata);
+router.post("/direcciones", grataCtrl_1.default.getDirecciones);
+router.get("/aniosGrata", grataCtrl_1.default.getAnios);
+router.get("/getPeriods", auth_1.default, grataCtrl_1.default.getPeriods);
+router.get("/anios", grataCtrl_1.default.getYears);
+router.get("/getStatusGrata", grataCtrl_1.default.getStatusGrata);
+router.get("/getGrata", auth_1.default, grataCtrl_1.default.getGrata);
+router.get("/currentPeriod", grataCtrl_1.default.getCurrentPeriod);
+exports.default = router;

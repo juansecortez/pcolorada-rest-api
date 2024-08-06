@@ -1,0 +1,540 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "REST API Peña Colorada",
+        "description": "REST API del Consorcio Minero Benito Juárez Pena Colorada, S.A. de C.V.",
+        "contact": {
+            "name": "API Support",
+            "email": "abelromeror763@gmai.com"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5001/api/v1",
+            "description": "Develop"
+        },
+        {
+            "url": "http://192.168.1.98:5001/api/v1",
+            "description": "Production"
+        }
+    ],
+    "tags": [
+        {
+            "name": "Login",
+            "description": "Sesiones de la API."
+        },
+        {
+            "name": "Grata",
+            "description": "Rutas para el sistema de gratas"
+        },
+        {
+            "name": "Trabajadores",
+            "description": ""
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "RefreshToken": {
+                "type": "apiKey",
+                "name": "Cookie",
+                "in": "header",
+                "description": "Esta cookie se envia para obtener un nuevo access token"
+            },
+            "token": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "El token se obtiene cuando inicias sesión o cuando realizas un refresh token para obtener un nuevo"
+            }
+        },
+        "schemas": {
+            "GrataGet": {
+                "properties": {
+                    "periodGrata": {
+                        "type": "number"
+                    },
+                    "statusGrata": {
+                        "type": "number"
+                    },
+                    "budgetGrata": {
+                        "type": "number"
+                    },
+                    "actualBudgetGrata": {
+                        "type": "number"
+                    },
+                    "totalWorkersByEvaluation": {
+                        "$ref": "#/components/schemas/totalWorkersByEvaluation"
+                    },
+                    "totalWorkersByPotential": {
+                        "$ref": "#/components/schemas/totalWorkersByPotential"
+                    },
+                    "totalWorkersByQualification": {
+                        "$ref": "#/components/schemas/totalWorkersByQualification"
+                    },
+                    "workersGrata": {
+                        "$ref": "#/components/schemas/Worker"
+                    }
+                }
+            },
+            "totalWorkersByQualification": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "calificacion": {
+                            "type": "number"
+                        },
+                        "total": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "totalWorkersByPotential": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "potencial": {
+                            "type": "number"
+                        },
+                        "total": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "totalWorkersByEvaluation": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "name": {
+                            "type": "number"
+                        },
+                        "total": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "Worker": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "nombre_Empleado": {
+                            "type": "string"
+                        },
+                        "departamento": {
+                            "type": "string"
+                        },
+                        "puesto": {
+                            "type": "string"
+                        },
+                        "salario_Mensual": {
+                            "type": "number"
+                        },
+                        "potencial": {
+                            "type": "string"
+                        },
+                        "calificacion": {
+                            "type": "number"
+                        },
+                        "bono_Final": {
+                            "type": "number"
+                        },
+                        "bono_Anterior": {
+                            "type": "number"
+                        },
+                        "bono_Minimo": {
+                            "type": "number"
+                        },
+                        "bono_Maximo": {
+                            "type": "number"
+                        },
+                        "codigo_Empleado": {
+                            "type": "number"
+                        },
+                        "id_periodo": {
+                            "type": "number"
+                        },
+                        "id_direccion": {
+                            "type": "number"
+                        },
+                        "anio": {
+                            "type": "number"
+                        }
+                    }
+                }
+            },
+            "GrataCreate": {
+                "properties": {
+                    "anio": {
+                        "type": "number"
+                    },
+                    "fechaInicio": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "fechaFin": {
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "presupuestoFinanzas": {
+                        "type": "number"
+                    },
+                    "presupuestoMinas": {
+                        "type": "number"
+                    },
+                    "presupuestoPelet": {
+                        "type": "number"
+                    },
+                    "presupuestoRH": {
+                        "type": "number"
+                    },
+                    "presupuestoGeneral": {
+                        "type": "number"
+                    },
+                    "presupuestoBeneficio": {
+                        "type": "number"
+                    },
+                    "presupuestoTec": {
+                        "type": "number"
+                    },
+                    "presupuestoDirectores": {
+                        "type": "number"
+                    }
+                }
+            },
+            "Message": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Direccion": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "nombre_direccion": {
+                        "type": "string"
+                    }
+                }
+            },
+            "UserAuth": {
+                "properties": {
+                    "message": {
+                        "type": "string"
+                    },
+                    "access_token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "object",
+                        "properties": {
+                            "USUARIOID": {
+                                "type": "string"
+                            },
+                            "NOMBRE": {
+                                "type": "string"
+                            },
+                            "NOEMPLEADO": {
+                                "type": "number"
+                            },
+                            "direcciones": {
+                                "type": "array",
+                                "items": {
+                                    "type": "number"
+                                }
+                            },
+                            "role": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/auth/login": {
+            "post": {
+                "summary": "Iniciar sesión",
+                "description": "Inicio de sesión que devuelve un access token, una cookie para el refresh token y devuelve la información del usuario",
+                "tags": [
+                    "Login"
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "username": {
+                                        "type": "string",
+                                        "description": "Nombre de usuario",
+                                        "example": "abel.romero"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "description": "Contraseña del usuario",
+                                        "example": "contraseñaultrasecreta"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Inicio de sesión correcto",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserAuth"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh_token": {
+            "get": {
+                "summary": "Refresh token",
+                "description": "Se hace una actualización de access token mediante de una cookie. La cookie se tiene que obtener cuando se haga un login",
+                "tags": [
+                    "Login"
+                ],
+                "security": [
+                    {
+                        "RefreshToken": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Refrescar usuario y access token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserAuth"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "get": {
+                "summary": "Cerrar sesión",
+                "description": "Cerrar la sesión del usuario esto eliminara la cookie almacenada en el navegador",
+                "tags": [
+                    "Login"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cerrar sesión completada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grata/creargrata": {
+            "post": {
+                "summary": "Crear grata",
+                "description": "Crear una grata",
+                "tags": [
+                    "Grata"
+                ],
+                "security": [
+                    {
+                        "token": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/GrataCreate"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se creo la grata correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grata/getGrata": {
+            "get": {
+                "summary": "Obtener una grata",
+                "description": "Obtener una grata de un periodo y una dirección especifica.",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "year",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    },
+                    {
+                        "in": "query",
+                        "name": "idDirection",
+                        "schema": {
+                            "type": "number"
+                        },
+                        "required": true
+                    }
+                ],
+                "tags": [
+                    "Grata"
+                ],
+                "security": [
+                    {
+                        "token": []
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Obtiene una grata completa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/GrataGet"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grata/validExistGrata": {
+            "post": {
+                "summary": "Validar si existe grata",
+                "description": "Validar si existe una grata si existe se devolvera 1 de lo contrario un 0, se le tiene que proporsionar el periodo de la grata.",
+                "tags": [
+                    "Grata"
+                ],
+                "security": [
+                    {
+                        "token": []
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "message": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Se encontro una grata.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/grata/anios": {
+            "get": {
+                "summary": "Peridos disponibles para crear una grata",
+                "description": "Esta ruta se obtienen los años disponibles para crear una grata.",
+                "tags": [
+                    "Grata"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muestra de periodos disponibles.",
+                        "content": {
+                            "aplication/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "anio": {
+                                                "type": "number"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/directions/user": {
+            "get": {
+                "summary": "Obtener las direcciones de un usuario",
+                "description": "Se optienen las direcciones de un usuario por medio de su id",
+                "tags": [
+                    "Trabajadores"
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "description": "El nombre de usuario",
+                        "example": "abel.romero",
+                        "schema": {
+                            "type": "string"
+                        },
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Muestra las direcciones disponibles para un usuario.",
+                        "content": {
+                            "aplication/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Direccion"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
