@@ -16,6 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
+	  origin:["http://vwebgama:8093","http://vwebgama:5002","http://localhost:5001","http://localhost:5002"],
     credentials: true,
   })
 );

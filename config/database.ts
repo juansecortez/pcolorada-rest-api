@@ -16,7 +16,7 @@ export async function getconectionVDBGAMA() {
     const pool = await sql.connect(dbSettings);
     return pool;
   } catch (error) {
-    console.error(`No hay conexion db`);
+    console.error(`No hay conexion dbBBBBBBBBB`);
     return false;
   }
 }
@@ -38,7 +38,7 @@ export async function getconectionVDBDELTA() {
     const pool = await sql.connect(dbSettings2);
     return pool;
   } catch (error) {
-    console.error(`No hay conexion db`);
+    console.error(`No hay conexion dbB`);
     return false;
   }
 }
