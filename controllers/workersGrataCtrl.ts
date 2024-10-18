@@ -182,6 +182,83 @@ const workersController = {
       return res.status(500).json({ message: error.message });
     }
   },
+  getWorkerLastRating: async (req: Request, res: Response) => {
+    try {
+      const { codWorker } = req.body;
+      const errors = [];
+  
+      // Validación: El código de empleado debe ser numérico
+      if (!validateNumber(codWorker)) {
+        errors.push("El código de empleado debe ser numérico");
+      }
+      
+      // Si hay errores, devolver respuesta 400
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+  
+      // Obtener la conexión a la base de datos
+      const pool1 = await getconectionVDBGAMA();
+  
+      // Verificar si la conexión falló
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+  
+      // Ejecutar el procedimiento almacenado que obtiene la última calificación anterior
+      const lastRating = await pool1.query(
+        `USE GRATA EXEC [dbo].[sp_obtenercalif_anterior] ${codWorker}`
+      );
+      
+      // Cerrar la conexión a la base de datos
+      pool1.close();
+  
+      // Devolver el resultado de la consulta
+      res.json(lastRating.recordsets[0]);
+    } catch (error: any) {
+      // Capturar errores y devolver respuesta 500
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  getPotencialAndNivelFirma : async (req: Request, res: Response) => {
+    try {
+      const { anio, id_direccion } = req.body;
+      const errors = [];
+  
+      // Validar que los parámetros sean numéricos
+      if (!validateNumber(anio)) {
+        errors.push("El año debe ser numérico");
+      }
+      if (!validateNumber(id_direccion)) {
+        errors.push("El id_direccion debe ser numérico");
+      }
+      if (errors.length > 0) {
+        return res.status(400).json({ message: errors });
+      }
+  
+      // Obtener la conexión a la base de datos
+      const pool1 = await getconectionVDBGAMA();
+      if (pool1 === false) {
+        return res.status(400).json({ message: "No hay servicio" });
+      }
+  
+      // Ejecutar el procedimiento almacenado con los parámetros
+      const result = await pool1.query(
+        `USE GRATA EXEC [dbo].[sp_obtener_potencial_nivelfirma] ${anio}, ${id_direccion}`
+      );
+      
+      // Cerrar la conexión a la base de datos
+      pool1.close();
+  
+      // Devolver el resultado de la consulta
+      res.json(result.recordsets[0]);
+    } catch (error: any) {
+      console.log({ message: error.message });
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  
   getWorkersByDirection: async (req: Request, res: Response) => {
     try {
       const { idDirection, year } = req.body;

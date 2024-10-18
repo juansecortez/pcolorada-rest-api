@@ -13,4 +13,8 @@ router.get("/getAniosPeriodByUser", periodCtrl_1.default.getAniosPeriodByUser);
 router.get("/averageMatrix", auth_1.default, periodCtrl_1.default.averageMatrix);
 router.post("/sendEmails", auth_1.default, periodCtrl_1.default.sendEmailPeriod);
 router.post("/getWorkersByPeriod", auth_1.default, periodCtrl_1.default.getWorkersByPeriod);
+// Nuevas rutas agregadas
+router.get("/getPeriodsByBono", auth_1.default, periodCtrl_1.default.getPeriodsByBono);
+router.get("/getPeriodsBySucesion", auth_1.default, periodCtrl_1.default.getPeriodsBySucesion);
+router.post("/getPeopleBySucesion", auth_1.default, periodCtrl_1.default.getPeopleBySucesion);
 exports.default = router;

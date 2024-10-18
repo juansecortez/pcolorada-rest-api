@@ -33,6 +33,22 @@ app.use("/api/v1/grata", routes_1.default.grataRouter);
 app.use("/api/v1/workers", routes_1.default.workersGrataRouter);
 app.use("/api/v1/auth", routes_1.default.authRouter);
 app.use("/api/v1/period", routes_1.default.periodRouter);
+// Middleware para manejo de errores
+app.use((err, req, res, next) => {
+    console.error('Error capturado:', err.stack);
+    // Mostrar errores detallados solo en desarrollo
+    if (process.env.NODE_ENV === 'development') {
+        res.status(err.status || 500).json({
+            message: err.message,
+            error: err
+        });
+    }
+    else {
+        res.status(err.status || 500).json({
+            message: 'Error en el servidor'
+        });
+    }
+});
 //Server listening
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

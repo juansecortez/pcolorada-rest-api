@@ -9,6 +9,8 @@ const auth_1 = __importDefault(require("../middlewares/auth"));
 const router = (0, express_1.Router)();
 router.post("/", workersGrataCtrl_1.default.insertBonoFinalWorker);
 router.post("/history", workersGrataCtrl_1.default.getWorkerHistory);
+router.post("/lastrating", workersGrataCtrl_1.default.getWorkerLastRating);
+router.post("/ptencialnivelfirma", workersGrataCtrl_1.default.getPotencialAndNivelFirma);
 router.post("/direction", workersGrataCtrl_1.default.getWorkersByDirection);
 router.get("/directions/user", workersGrataCtrl_1.default.getDirectionsByUserId);
 router.post("/bonoFinal/average", auth_1.default, workersGrataCtrl_1.default.updateWorkersBonoFinalAverage);

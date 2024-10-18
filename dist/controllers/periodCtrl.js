@@ -206,7 +206,10 @@ const periodController = {
                 return res.status(400).json({ message: "No hay servicio" });
             }
             const result = yield pool1.query(`USE GRATA
-      select anio_periodo from periodos where estatus = ${estatus}`);
+SELECT anio_periodo 
+FROM periodos 
+WHERE estatus = ${estatus} 
+AND proceso = 'Bono'`);
             pool1.close();
             return res.status(200).json(result.recordsets[0]);
         }
@@ -294,6 +297,103 @@ const periodController = {
         catch (error) {
             console.log({ message: error.message });
             return res.status(500).json({ message: error.message });
+        }
+    }),
+    getPeriodsByBono: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const pool = yield (0, database_1.getconectionVDBGAMA)();
+            if (!pool) {
+                return res.status(400).json({ message: "No hay servicio" });
+            }
+            const result = yield pool.query(`
+            USE GRATA;
+            SELECT * FROM periodos WHERE proceso = 'Bono'
+        `);
+            pool.close();
+            return res.status(200).json(result.recordsets[0]);
+        }
+        catch (error) {
+            console.log({ message: error.message });
+            return res.status(500).json({ message: error.message });
+        }
+    }),
+    getPeriodsBySucesion: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const pool = yield (0, database_1.getconectionVDBGAMA)();
+            if (!pool) {
+                return res.status(400).json({ message: "No hay servicio" });
+            }
+            const result = yield pool.query(`
+          USE GRATA;
+          SELECT * FROM periodos WHERE proceso = 'Sucesion'
+      `);
+            pool.close();
+            return res.status(200).json(result.recordsets[0]);
+        }
+        catch (error) {
+            console.log({ message: error.message });
+            return res.status(500).json({ message: error.message });
+        }
+    }),
+    getPeopleBySucesion: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            console.log("Iniciando función getPeopleBySucesion");
+            // Extraer el id_direccion desde el cuerpo de la petición
+            console.log("Body de la petición:", req.body);
+            const { id_direccion } = req.body;
+            // Validar que se recibió un id_direccion
+            if (!id_direccion) {
+                console.error("id_direccion no proporcionado");
+                return res.status(400).json({ message: "El id_direccion es requerido" });
+            }
+            // Validar que id_direccion es numérico
+            if (isNaN(id_direccion)) {
+                console.error("id_direccion no es numérico:", id_direccion);
+                return res.status(400).json({ message: "El id_direccion debe ser numérico" });
+            }
+            console.log("id_direccion validado:", id_direccion);
+            // Obtener la conexión
+            console.log("Intentando obtener la conexión a la base de datos");
+            const pool = yield (0, database_1.getconectionVDBGAMA)();
+            if (!pool) {
+                console.error("No se pudo obtener la conexión a la base de datos");
+                return res.status(400).json({ message: "No hay servicio" });
+            }
+            console.log("Conexión a la base de datos establecida con éxito");
+            // Hacer la consulta a la vista usando el id_direccion
+            console.log("Ejecutando consulta SQL para id_direccion:", id_direccion);
+            const result = yield pool.request()
+                .input('id_direccion', id_direccion)
+                .query(`
+        USE GRATA;
+        SELECT * 
+        FROM [grata].[dbo].[View_PeopleBySucesion]
+        WHERE id_direccion = @id_direccion
+      `);
+            // Log de los resultados de la consulta
+            console.log("Resultado de la consulta SQL:", result.recordsets);
+            // Cerrar la conexión
+            pool.close();
+            console.log("Conexión a la base de datos cerrada correctamente");
+            if (result.recordsets.length === 0) {
+                console.error("No se encontraron resultados para id_direccion:", id_direccion);
+                return res.status(404).json({ message: "No se encontraron resultados" });
+            }
+            // Devolver los resultados
+            console.log("Devolviendo resultados correctamente");
+            return res.status(200).json(result.recordsets[0]);
+        }
+        catch (error) {
+            console.error("Error capturado en getPeopleBySucesion:", {
+                message: error.message,
+                stack: error.stack,
+                detail: error
+            });
+            return res.status(500).json({
+                message: "Error en el servidor",
+                detail: error.message,
+                stack: error.stack
+            });
         }
     }),
 };

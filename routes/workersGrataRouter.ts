@@ -5,6 +5,8 @@ const router = Router();
 
 router.post("/", workersGrataCtrl.insertBonoFinalWorker);
 router.post("/history", workersGrataCtrl.getWorkerHistory);
+router.post("/lastrating", workersGrataCtrl.getWorkerLastRating);
+router.post("/ptencialnivelfirma", workersGrataCtrl.getPotencialAndNivelFirma);
 router.post("/direction", workersGrataCtrl.getWorkersByDirection);
 router.get("/directions/user", workersGrataCtrl.getDirectionsByUserId);
 router.post("/bonoFinal/average",auth, workersGrataCtrl.updateWorkersBonoFinalAverage);

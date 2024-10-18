@@ -31,7 +31,8 @@ const sendEmail = (to, url, txt, title) => __awaiter(void 0, void 0, void 0, fun
         from: SENDER_EMAIL,
         to: to,
         subject: txt,
-        cc: `cgutierrez@pcolorada.com`,
+        //cc:`cgutierrez@pcolorada.com`,
+        cc: `gquieno@pcolorada.com`,
         html: `
       <div style="max-width: 700px; margin:auto; border: 10px solid #ddd; padding: 50px 20px; font-size: 110%;">
       <h2 style="text-align: center; text-transform: uppercase;color: teal;">${title}</h2>

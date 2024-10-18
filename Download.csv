@@ -1,0 +1,82 @@
+Nombre,UsuarioId,UNOId,PUEId,UsuarioIdJefe,UNOIdJefe,PUEIdJefe,MFechaHora,Puesto,TGrupo,Primario
+Juan Antonio,aaguilar,24940,159207,atronco,52000000,52000000,2024-04-22 10:15:54.883,Director de Beneficio,4,AMTG
+Jose Amador,aanguiano,15472,52000192,hmendez,52000024,52000190,2024-04-22 10:15:54.883,Jefe de Extracción de Minas,2,HMH
+Rafael Alejandro,agutierrez,33280,199070,atronco,33279,198982,2024-04-22 10:15:54.883,"Gerente de Procesos, Calidad e Ing. Amb",3,AMTG
+Marco Antonio,ahernandez,52000022,52000170,jmoncada,24877,159204,2024-04-22 10:15:54.883,Gerente Mantenimiento Mec y Eléc Móvil,3,JMC
+Alberto Guillermo,albertoch,15489,52000127,aochoa,52000018,52000124,2024-04-22 10:15:54.883,Jefe de Mantto Electr Instrum Mol y Conc,2,AOR
+Arturo,aochoa,52000018,52000124,aaguilar,24940,159207,2024-04-22 10:15:54.883,Gerente Mantto Eléctrico e Instrum M y C,3,JAAC
+Alfonso Agustin,asaucedo,33305,199073,agutierrez,33280,199070,2024-04-22 10:15:54.883,Jefe de Proceso y Calidad Mina,2,RAGR
+Jose Alberto,avilla,52000027,52000225,jmoncada,24877,159204,2024-04-22 10:15:54.883,Gerente Planeación de Minas y Geología,3,JMC
+Brianda Anahi,bgarcia,15483,141969,mresendez,52000012,52000076,2024-04-22 10:15:54.883,Jefa de Relaciones Laborales,2,MARU
+Barbara,bhernandez,53404,317688,agutierrez,33280,199070,2024-04-22 10:15:54.883,Jefa de Ingeniería Ambiental,2,RAGR
+Ma. Concepcion,canguiano,15466,52002656,hcarrillo,24941,295516,2024-04-22 10:15:54.883,Jefe de Tesorería,2,HLCM
+Cesar Alejandro,cavila,29853,52003025,fcarrillo,52000226,155131,2024-04-22 10:15:54.883,Jefe de Proyectos Presas,2,FICZ
+Carlos Misael,cbarajas,18388,134334,lmartinez,52000016,52000105,2024-04-22 10:15:54.883,Jefe de Planeación de Mantto Mecánico,2,LAML
+Cesar,cbarragan,52000000,220926,atronco,52000000,52000000,2024-04-22 10:15:54.883,Oficial de Cumplimiento y Admón de Riesg,2,AMTG
+Ciro,cgutierrez,52000014,52000081,mresendez,52000012,52000076,2024-04-22 10:15:54.883,Jefe de Nómina y Remuneraciones,2,MARU
+Cesar Alejandro,clicea,34860,52001481,ahernandez,52000022,52000170,2024-04-22 10:15:54.883,Jefe de Planeación de Mantto Móvil,2,MAHV
+Crystopher Israel,cperez,52000006,52003104,atronco,52000000,52000000,2024-04-22 10:15:54.883,Director de Proyectos,4,AMTG
+David,ddoval,52000010,52002658,galvarez,42056,243931,2024-04-22 10:15:54.883,Jefe de Infraestructura TI,2,GAAP
+Daniel,descobar,15467,52000058,jtorres,52000001,52000004,2024-04-22 10:15:54.883,Gerente de Administración,3,JFTM
+Aldy Dante,desparza,17199,52000088,vchavez,52859,314110,2024-04-22 10:15:54.883,Jefe de Seguridad,2,VLCV
+Daniel,dmendez,52000325,52003366,aochoa,52000018,52000124,2024-04-22 10:15:54.883,Jefe de Infraestructura y Control,2,AOR
+Enrique,ecarrillo,54572,324078,lcastillo,33387,199330,2024-04-22 10:15:54.883,Jefe de Proyectos Generales,2,LCC
+Edwar,ecortez,52000020,52000150,aaguilar,24940,159207,2024-04-22 10:15:54.883,Gerente de Producción Molienda y Concent,3,JAAC
+Edgar,efelipe,27559,171554,ahernandez,52000022,52000170,2024-04-22 10:15:54.883,Jefe de Mantto Barrenación y Eq Auxiliar,2,MAHV
+Federico,faguilar,52000023,52002501,ahernandez,52000022,52000170,2024-04-22 10:15:54.883,Jefe de Mantto Electrico e Instrum Movil,2,MAHV
+Francisco Irwin,fcarrillo,52000226,155131,cperez,52000006,52003104,2024-04-22 10:15:54.883,Gerente de Proyectos Presas,3,CIPA
+Guillermo Arturo,galvarez,42056,243931,jtorres,52000001,52000004,2024-04-22 10:15:54.883,Gerente de TI,3,JFTM
+Gerardo,gcolin,52000015,52000101,svilla,52000017,52000115,2024-04-22 10:15:54.883,Jefe de Mantto Mecánico Peletizado,2,SVM
+Gustavo,gguerrero,33304,199072,agutierrez,33280,199070,2024-04-22 10:15:54.883,Jefe de Proceso y Calidad Peletizado,2,RAGR
+Gustavo,gmeade,52000002,52000069,atronco,52000000,52000000,2024-04-22 10:15:54.883,Director de Recursos Humanos,4,AMTG
+Gibran Ernesto,gquiteno,42056,234381,galvarez,42056,243931,2024-04-22 10:15:54.883,Jefe de Desarrollo TI,2,GAAP
+Hugo Armando,hagil,15482,52000144,rcampos,52000019,166652,2024-04-22 10:15:54.883,Jefe de Embarques,2,JRCP
+Hugo Leonello,hcarrillo,24941,295516,jtorres,52000001,52000004,2024-04-22 10:15:54.883,Gerente de Contraloría,3,JFTM
+Heriberto,hgonzalez,15490,52002007,svilla,52000017,52000115,2024-04-22 10:15:54.883,Jefe de Mantto Elec e Inst Pelet,2,SVM
+Hector Augusto,hmartinez,45521,268345,mtirado,14832,52002627,2024-04-22 10:15:54.883,"Jefe de Salud, Higiene y Bienestar",2,MTT
+Humberto,hmendez,52000024,52000190,jmoncada,24877,159204,2024-04-22 10:15:54.883,Gerente de Operación de Minas,3,JMC
+Ismael,isilva,39948,232185,aaguilar,24940,159207,2024-04-22 10:15:54.883,Jefe de Administración de Mantenimiento,2,JAAC
+Jose Gabriel,jcordova,15475,52001975,ahernandez,52000022,52000170,2024-04-22 10:15:54.883,Jefe de Mantto a Equipo de Acarreo,2,MAHV
+Jorge,jcortes,34704,52003400,ecortez,52000020,52000150,2024-04-22 10:15:54.883,Jefe de Trituración y Almacén de Mineral,2,ECR
+Jaime,jcruz,52000300,52003300,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente de Protección Patrimonial,3,GMG
+Juan Diego,jdiaz,50677,300297,mreyes,33307,199075,2024-04-22 10:15:54.883,Jefe de Planeamiento Estratégico,2,MARA
+J. Jesus,jhernandez,52000011,52000090,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente de Relaciones con la Comunidad,3,GMG
+Jaime Rene,jmartinez,44371,259174,jtorres,52000001,52000004,2024-04-22 10:15:54.883,Jefe de Administración de Servicios,2,JFTM
+Juan Carlos,jmichel,52000008,52000006,jtorres,52000001,52000004,2024-04-22 10:15:54.883,Gerente de Abastecimientos y Contratos,3,JFTM
+Juardith,jmoncada,24877,159204,atronco,52000000,52000000,2024-04-22 10:15:54.883,Director de Minas,4,AMTG
+Jorge,jorgeh,15471,52002078,avilla,52000027,52000225,2024-04-22 10:15:54.883,Jefe de Planeación de Minas,2,JAVM
+Jose,jpreciado,15480,52001931,lmartinez,52000016,52000105,2024-04-22 10:15:54.883,Jefe de Mantto Mecánico Mol. y Con.,2,LAML
+Jorge Fernando,jtorres,52000001,52000004,atronco,52000000,52000000,2024-04-22 10:15:54.883,Director de Administración y Finanzas,4,AMTG
+Jenysser,juriostegui,48231,288713,mtirado,14832,52002627,2024-04-22 10:15:54.883,Jefa de Capacitación y Empleos,2,MTT
+Refugio Javier,jvillalobos,42056,52003251,galvarez,42056,243931,2024-04-22 10:15:54.883,Líder de Estrategias Digitales,2,GAAP
+Joel,jzamora,54574,324082,jhernandez,52000011,52000090,2024-04-22 10:15:54.883,Jefe de Relaciones con la Comunidad,2,JJHM
+Jose de Jesus,jzepeda,20081,141004,svilla,52000017,52000115,2024-04-22 10:15:54.883,Jefe de Planeación de Mantenimiento,2,SVM
+Karina,kcampos,33306,199074,agutierrez,33280,199070,2024-04-22 10:15:54.883,Jefa de Sist de Gestión Integral y Norma,2,RAGR
+Kandice Vanice,kfajardo,14860,52000073,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente Legal,3,GMG
+Karla Lorena,kpreciado,15461,52000023,jmichel,52000008,52000006,2024-04-22 10:15:54.883,Jefe de Compras y Contratos,2,JCMM
+Lorenzo Francisco,lcano,52000329,52003372,cperez,52000006,52003104,2024-04-22 10:15:54.883,Beneficiation&Peletizing Project Manager,2,CIPA
+Leonel,lcastillo,33387,199330,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente de Proyectos Generales,3,GMG
+Luis Alberto,lmartinez,52000016,52000105,aaguilar,24940,159207,2024-04-22 10:15:54.883,Gerente de Mantto Mecánico Mol y Conc,3,JAAC
+Martha Vanessa,mesparza,55854,306890,sfigueroa,20253,141627,2024-04-22 10:15:54.883,Jefa de Com. Planta de Filtrado,2,SFR
+Marco Antonio,mguerra,15481,52002802,rcampos,52000019,166652,2024-04-22 10:15:54.883,Jefe de Operación,2,JRCP
+Moises,mlangarica,18389,133989,hmendez,52000024,52000190,2024-04-22 10:15:54.883,Jefe Sistema de Gestión de Minas,2,HMH
+Miguel Angel,mlopez,52000331,52003373,lcastillo,33387,199330,2024-04-22 10:15:54.883,Jefe de Infraest y Servicios al Personal,2,LCC
+Maria Guadalupe,mperez,51408,133446,mtirado,14832,52002627,2024-04-22 10:15:54.883,Jefa de HR Services,2,MTT
+Mario Alberto,mresendez,52000012,52000076,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente de Relaciones Laborales,3,GMG
+Marco Antonio,mreyes,33307,199075,atronco,33279,198982,2024-04-22 10:15:54.883,Gerente de Planeamiento Económico e Ind,3,AMTG
+Mayra Yesenia,msainz,51408,214355,mperez,51408,133446,2024-04-22 10:15:54.883,Senior HRBP Mina,2,MGPV
+Marisol,mtirado,14832,52002627,gmeade,52000002,52000069,2024-04-22 10:15:54.883,Gerente de Recursos Humanos,3,GMG
+Mauricio Valentin,mvelez,38919,227338,mreyes,33307,199075,2024-04-22 10:15:54.883,Jefe de Ingeniería Industrial,2,MARA
+Pedro,pgonzalez,15468,52000065,descobar,15467,52000058,2024-04-22 10:15:54.883,Jefe de Información Financiera y Proyect,2,DEG
+Raul,ralvarado,52000328,52003370,cperez,52000006,52003104,2024-04-22 10:15:54.883,Services Project Leader,2,CIPA
+Jose Ramon,rcampos,52000019,166652,atronco,20254,141628,2024-04-22 10:15:54.883,Gerente de Operación y Embarques,3,AMTG
+Ramiro,rlopez,51408,52003376,mperez,51408,133446,2024-04-22 10:15:54.883,Senior HRBP ACIP,2,MGPV
+Rafael,rrangel,15474,52003001,ahernandez,52000022,52000170,2024-04-22 10:15:54.883,Jefe de Mantenimiento Equipo de Carga,2,MAHV
+Rodrigo,rreyna,15487,52000159,ecortez,52000020,52000150,2024-04-22 10:15:54.883,Jefe de Producción Mol y Conc,2,ECR
+Rafael,rsilva,47796,285439,vchavez,52859,314110,2024-04-22 10:15:54.883,Project Safety Leader,2,VLCV
+Saul,sfigueroa,20253,141627,aaguilar,24940,159207,2024-04-22 10:15:54.883,Gerente de Presas y Líneas de Conducción,3,JAAC
+Sergio Octavio,svaldovines,15460,52000007,jmichel,52000008,52000006,2024-04-22 10:15:54.883,Jefe de Almacenes,2,JCMM
+Sergio,svilla,52000017,52000115,atronco,20254,141628,2024-04-22 10:15:54.883,Gerente de Mantenimiento Peletizado,3,AMTG
+Salvador,svizcaino,54571,324077,jmoncada,24877,159204,2024-04-22 10:15:54.883,Jefe de Control y Servicios Tecnológicos,2,JMC
+Veronica Liliana,vchavez,52859,314110,atronco,52000000,52000000,2024-04-22 10:15:54.883,Gerente de Seguridad,3,AMTG
+Yorsis Alberto,ytoscano,48230,288712,jcruz,52000300,52003300,2024-04-22 10:15:54.883,Jefe de Protección Patriomonial Pelet,2,JCG

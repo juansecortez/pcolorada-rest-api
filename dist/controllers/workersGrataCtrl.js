@@ -189,6 +189,68 @@ const workersController = {
             return res.status(500).json({ message: error.message });
         }
     }),
+    getWorkerLastRating: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { codWorker } = req.body;
+            const errors = [];
+            // Validación: El código de empleado debe ser numérico
+            if (!(0, Validate_1.validateNumber)(codWorker)) {
+                errors.push("El código de empleado debe ser numérico");
+            }
+            // Si hay errores, devolver respuesta 400
+            if (errors.length > 0) {
+                return res.status(400).json({ message: errors });
+            }
+            // Obtener la conexión a la base de datos
+            const pool1 = yield (0, database_1.getconectionVDBGAMA)();
+            // Verificar si la conexión falló
+            if (pool1 === false) {
+                return res.status(400).json({ message: "No hay servicio" });
+            }
+            // Ejecutar el procedimiento almacenado que obtiene la última calificación anterior
+            const lastRating = yield pool1.query(`USE GRATA EXEC [dbo].[sp_obtenercalif_anterior] ${codWorker}`);
+            // Cerrar la conexión a la base de datos
+            pool1.close();
+            // Devolver el resultado de la consulta
+            res.json(lastRating.recordsets[0]);
+        }
+        catch (error) {
+            // Capturar errores y devolver respuesta 500
+            console.log({ message: error.message });
+            return res.status(500).json({ message: error.message });
+        }
+    }),
+    getPotencialAndNivelFirma: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { anio, id_direccion } = req.body;
+            const errors = [];
+            // Validar que los parámetros sean numéricos
+            if (!(0, Validate_1.validateNumber)(anio)) {
+                errors.push("El año debe ser numérico");
+            }
+            if (!(0, Validate_1.validateNumber)(id_direccion)) {
+                errors.push("El id_direccion debe ser numérico");
+            }
+            if (errors.length > 0) {
+                return res.status(400).json({ message: errors });
+            }
+            // Obtener la conexión a la base de datos
+            const pool1 = yield (0, database_1.getconectionVDBGAMA)();
+            if (pool1 === false) {
+                return res.status(400).json({ message: "No hay servicio" });
+            }
+            // Ejecutar el procedimiento almacenado con los parámetros
+            const result = yield pool1.query(`USE GRATA EXEC [dbo].[sp_obtener_potencial_nivelfirma] ${anio}, ${id_direccion}`);
+            // Cerrar la conexión a la base de datos
+            pool1.close();
+            // Devolver el resultado de la consulta
+            res.json(result.recordsets[0]);
+        }
+        catch (error) {
+            console.log({ message: error.message });
+            return res.status(500).json({ message: error.message });
+        }
+    }),
     getWorkersByDirection: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { idDirection, year } = req.body;

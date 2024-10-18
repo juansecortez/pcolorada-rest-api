@@ -14,20 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getconectionVDBGAMA = getconectionVDBGAMA;
 exports.getconectionVDBDELTA = getconectionVDBDELTA;
+exports.getconectionOrganigrama = getconectionOrganigrama;
 exports.getconectionGratas = getconectionGratas;
 const mssql_1 = __importDefault(require("mssql"));
 //Configuración para SQL Server query de conexión
 const dbSettings = {
-    user: `${process.env.DB_USER}`,
-    password: `${process.env.DB_PASSWORD}`,
-    server: `${process.env.DB_SERVER}`,
-    database: `${process.env.DB_NAME}`,
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB_SERVER || '',
+    database: process.env.DB_NAME || '',
     options: {
         encrypt: true,
         trustServerCertificate: true,
     },
 };
-//Conexión a la base de datos de VDBGAMA
+// Conexión a la base de datos de VDBGAMA
 function getconectionVDBGAMA() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -35,23 +36,26 @@ function getconectionVDBGAMA() {
             return pool;
         }
         catch (error) {
-            console.error(`No hay conexion dbBBBBBBBBB`);
+            if (error instanceof Error) {
+                console.error(`Error en la conexión a VDBGAMA:`, error.message);
+                console.error(`Detalles del error:`, error.stack);
+            }
             return false;
         }
     });
 }
 //Configuración para SQL Server query de conexión
 const dbSettings2 = {
-    user: `${process.env.DB_USER}`,
-    password: `${process.env.DB_PASSWORD}`,
-    server: `${process.env.DB2_SERVER}`,
-    database: `${process.env.DB2_NAME}`,
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB2_SERVER || '',
+    database: process.env.DB2_NAME || '',
     options: {
         encrypt: true,
         trustServerCertificate: true,
     },
 };
-//Conexión a la base de datos VDBDELTA
+// Conexión a la base de datos VDBDELTA
 function getconectionVDBDELTA() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -59,23 +63,51 @@ function getconectionVDBDELTA() {
             return pool;
         }
         catch (error) {
-            console.error(`No hay conexion dbB`);
+            if (error instanceof Error) {
+                console.error(`Error en la conexión a VDBDELTA:`, error.message);
+                console.error(`Detalles del error:`, error.stack);
+            }
+            return false;
+        }
+    });
+}
+const dbSettings3 = {
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB_SERVER || '',
+    database: process.env.DB3_NAME || '',
+    options: {
+        encrypt: true,
+        trustServerCertificate: true,
+    },
+};
+function getconectionOrganigrama() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const pool = yield mssql_1.default.connect(dbSettings3);
+            return pool;
+        }
+        catch (error) {
+            if (error instanceof Error) {
+                console.error(`Error en la conexión a Organigrama:`, error.message);
+                console.error(`Detalles del error:`, error.stack);
+            }
             return false;
         }
     });
 }
 //Configuración para SQL Server query de conexión local
 const dbSettingsGratas = {
-    user: `${process.env.DB_GRATASLOCAL_USER}`,
-    password: `${process.env.DB_GRATASLOCAL_PASSWORD}`,
-    server: `${process.env.DB_GRATASLOCAL_SERVER}`,
-    database: `${process.env.DB_GRATASLOCAL_NAME}`,
+    user: process.env.DB_GRATASLOCAL_USER || '',
+    password: process.env.DB_GRATASLOCAL_PASSWORD || '',
+    server: process.env.DB_GRATASLOCAL_SERVER || '',
+    database: process.env.DB_GRATASLOCAL_NAME || '',
     options: {
         encrypt: true,
         trustServerCertificate: true,
     },
 };
-//Conexión a la base de datos
+// Conexión a la base de datos GratasLocal
 function getconectionGratas() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -83,8 +115,10 @@ function getconectionGratas() {
             return pool;
         }
         catch (error) {
-            console.error(`No hay conexion db`);
-            console.log(error);
+            if (error instanceof Error) {
+                console.error(`Error en la conexión a GratasLocal:`, error.message);
+                console.error(`Detalles del error:`, error.stack);
+            }
             return false;
         }
     });
