@@ -1,7 +1,7 @@
-import sql, { ConnectionPool } from "mssql";
+import sql, { ConnectionPool, config as SQLConfig } from "mssql";
 
 // Tipo para las configuraciones de la base de datos
-interface DbSettings {
+interface DbSettings extends SQLConfig {
   user: string;
   password: string;
   server: string;
@@ -10,9 +10,21 @@ interface DbSettings {
     encrypt: boolean;
     trustServerCertificate: boolean;
   };
+  pool: {
+    max: number;
+    min: number;
+    idleTimeoutMillis: number;
+  };
 }
 
-//Configuración para SQL Server query de conexión
+// Configuración general del pool de conexiones para optimizar conexiones simultáneas
+const generalPoolSettings = {
+  max: 50, // Máximo de conexiones en el pool
+  min: 10,  // Mínimo de conexiones en el pool
+  idleTimeoutMillis: 60000, // Tiempo antes de liberar una conexión inactiva
+};
+
+// Configuración para la base de datos VDBGAMA
 const dbSettings: DbSettings = {
   user: process.env.DB_USER || '',
   password: process.env.DB_PASSWORD || '',
@@ -22,23 +34,24 @@ const dbSettings: DbSettings = {
     encrypt: true,
     trustServerCertificate: true,
   },
+  pool: generalPoolSettings,
 };
 
-// Conexión a la base de datos de VDBGAMA
+// Conexión a la base de datos VDBGAMA
 export async function getconectionVDBGAMA(): Promise<ConnectionPool | false> {
   try {
     const pool = await sql.connect(dbSettings);
     return pool;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error en la conexión a VDBGAMA:`, error.message);
-      console.error(`Detalles del error:`, error.stack);
+      console.error("Error en la conexión a VDBGAMA:", error.message);
+      console.error("Detalles del error:", error.stack);
     }
     return false;
   }
 }
 
-//Configuración para SQL Server query de conexión
+// Configuración para la base de datos VDBDELTA
 const dbSettings2: DbSettings = {
   user: process.env.DB_USER || '',
   password: process.env.DB_PASSWORD || '',
@@ -48,6 +61,7 @@ const dbSettings2: DbSettings = {
     encrypt: true,
     trustServerCertificate: true,
   },
+  pool: generalPoolSettings,
 };
 
 // Conexión a la base de datos VDBDELTA
@@ -57,14 +71,14 @@ export async function getconectionVDBDELTA(): Promise<ConnectionPool | false> {
     return pool;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error en la conexión a VDBDELTA:`, error.message);
-      console.error(`Detalles del error:`, error.stack);
+      console.error("Error en la conexión a VDBDELTA:", error.message);
+      console.error("Detalles del error:", error.stack);
     }
     return false;
   }
 }
 
-
+// Configuración para la base de datos Organigrama
 const dbSettings3: DbSettings = {
   user: process.env.DB_USER || '',
   password: process.env.DB_PASSWORD || '',
@@ -74,22 +88,24 @@ const dbSettings3: DbSettings = {
     encrypt: true,
     trustServerCertificate: true,
   },
+  pool: generalPoolSettings,
 };
 
+// Conexión a la base de datos Organigrama
 export async function getconectionOrganigrama(): Promise<ConnectionPool | false> {
   try {
     const pool = await sql.connect(dbSettings3);
     return pool;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error en la conexión a Organigrama:`, error.message);
-      console.error(`Detalles del error:`, error.stack);
+      console.error("Error en la conexión a Organigrama:", error.message);
+      console.error("Detalles del error:", error.stack);
     }
     return false;
   }
 }
 
-//Configuración para SQL Server query de conexión local
+// Configuración para la base de datos GratasLocal
 const dbSettingsGratas: DbSettings = {
   user: process.env.DB_GRATASLOCAL_USER || '',
   password: process.env.DB_GRATASLOCAL_PASSWORD || '',
@@ -99,6 +115,7 @@ const dbSettingsGratas: DbSettings = {
     encrypt: true,
     trustServerCertificate: true,
   },
+  pool: generalPoolSettings,
 };
 
 // Conexión a la base de datos GratasLocal
@@ -108,8 +125,8 @@ export async function getconectionGratas(): Promise<ConnectionPool | false> {
     return pool;
   } catch (error) {
     if (error instanceof Error) {
-      console.error(`Error en la conexión a GratasLocal:`, error.message);
-      console.error(`Detalles del error:`, error.stack);
+      console.error("Error en la conexión a GratasLocal:", error.message);
+      console.error("Detalles del error:", error.stack);
     }
     return false;
   }

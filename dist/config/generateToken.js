@@ -7,13 +7,13 @@ exports.generateRefreshToken = exports.generateAccessToken = exports.generateAct
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const generateActiveToken = (payload) => {
     return jsonwebtoken_1.default.sign(payload, `${process.env.ACTIVE_TOKEN_SECRET}`, {
-        expiresIn: "5m",
+        expiresIn: "120m",
     });
 };
 exports.generateActiveToken = generateActiveToken;
 const generateAccessToken = (payload) => {
     return jsonwebtoken_1.default.sign(payload, `${process.env.ACCESS_TOKEN_SECRET}`, {
-        expiresIn: "15m",
+        expiresIn: "120m",
     });
 };
 exports.generateAccessToken = generateAccessToken;

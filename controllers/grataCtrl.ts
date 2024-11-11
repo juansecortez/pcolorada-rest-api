@@ -667,66 +667,66 @@ WHERE [Nombre] LIKE '%' + @nombre + '%';
   },
   buscarColaboradorPorCodigoEmpleado: async (req: Request, res: Response) => {
     try {
-      const { codigo_Empleado } = req.body;
-
-      // Validar que se recibió el código de empleado
-      if (!codigo_Empleado) {
-        return res.status(400).json({ message: "Parámetro 'codigo_Empleado' es requerido." });
+      const { codigo_Empleado, anio } = req.body;
+  
+      // Validar que se recibieron el código de empleado y el año
+      if (!codigo_Empleado || !anio) {
+        return res.status(400).json({ message: "Parámetros 'codigo_Empleado' y 'anio' son requeridos." });
       }
-
+  
       // Conectar a la base de datos
       const pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(500).json({ message: "No hay conexión con la base de datos." });
       }
-
-      // Realizar la búsqueda en la vista vw_ColaboradoresDetallada
+  
+      // Realizar la búsqueda en la vista vw_ColaboradoresDetallada considerando el año
       const result = await pool.request()
         .input('codigo_Empleado', codigo_Empleado)
+        .input('anio', anio)
         .query(`
           SELECT 
-    [id],
-    [Nombre],
-    [Edad],
-    [Antigüedad],
-    [Puesto_actual],
-    [Formación],
-    [fecha_registro],
-    [sucesivo_id],
-    [orden],
-    [anio],
-    [Opcion],
-   [codigo_Empleado] as codWorker
-
-FROM 
-    [grata].[dbo].[sucesion]
-WHERE 
-    sucesivo_id = @codigo_Empleado
-ORDER BY 
-    CASE 
-        WHEN Opcion = 'Emergente' THEN 1 
-        WHEN Opcion = 'Reemplazo HOY' THEN 2 
-        WHEN Opcion = 'Mediano Plazo (3-5 años)' THEN 3 
-        ELSE 4 -- Por si hay otras opciones que no se especificaron
-    END,
-    [orden] ASC,
-    [fecha_registro] DESC;
-
+            [id],
+            [Nombre],
+            [Edad],
+            [Antigüedad],
+            [Puesto_actual],
+            [Formación],
+            [fecha_registro],
+            [sucesivo_id],
+            [orden],
+            [anio],
+            [Opcion],
+            [codigo_Empleado] as codWorker
+          FROM 
+            [grata].[dbo].[sucesion]
+          WHERE 
+            sucesivo_id = @codigo_Empleado AND anio = @anio
+          ORDER BY 
+            CASE 
+              WHEN Opcion = 'Emergente' THEN 1 
+              WHEN Opcion = 'Reemplazo HOY' THEN 2 
+              WHEN Opcion = 'Mediano Plazo (3-5 años)' THEN 3 
+              ELSE 4 -- Por si hay otras opciones que no se especificaron
+            END,
+            [orden] ASC,
+            [fecha_registro] DESC;
         `);
-
+  
       pool.close();
-
+  
       // Verificar si se encontraron resultados
       if (result.recordset.length === 0) {
-        return res.status(404).json({ message: "Colaborador no encontrado." });
+        return res.status(404).json({ message: "Colaborador no encontrado para el año especificado." });
       }
-
+  
       return res.status(200).json(result.recordset);
     } catch (error: any) {
       console.error("Error buscando colaborador por código de empleado:", error);
       return res.status(500).json({ message: error.message });
     }
   },
+  
 
   eliminarRegistroPorId: async (req: Request, res: Response) => {
     try {
@@ -819,24 +819,23 @@ ORDER BY
       return res.status(500).json({ message: error.message });
     }
   },
-  buscarEstadoSucesionPorCodigoEmplead:  async (req: Request, res: Response) => {
+  buscarEstadoSucesionPorCodigoEmplead: async (req: Request, res: Response) => {
     try {
-      const { codigo_Empleado } = req.body;
+      const { codigo_Empleado, anio } = req.body;
   
-      // Validar que se recibió el código de empleado
-      if (!codigo_Empleado) {
-        return res.status(400).json({ message: "Parámetro 'codigo_Empleado' es requerido." });
+      // Validar que se recibieron el código de empleado y el año
+      if (!codigo_Empleado || !anio) {
+        return res.status(400).json({ message: "Parámetros 'codigo_Empleado' y 'anio' son requeridos." });
       }
   
-      // Conectar a la base de datos
       const pool = await getconectionVDBGAMA();
       if (pool === false) {
         return res.status(500).json({ message: "No hay conexión con la base de datos." });
       }
   
-      // Ejecutar la función GetSuccessionStatus
       const result = await pool.request()
         .input('sucesivo_id', codigo_Empleado)
+        .input('anio', anio)
         .query(`
           SELECT 
             SucesivoID,
@@ -845,23 +844,94 @@ ORDER BY
             ReemplazoInmediato,
             MedianoPlazo,
             Reemplazos
-          FROM dbo.GetSuccessionStatus(@sucesivo_id);
+          FROM dbo.GetSuccessionStatus(@sucesivo_id, @anio);
         `);
   
       pool.close();
   
-      // Verificar si se encontraron resultados
       if (result.recordset.length === 0) {
         return res.status(404).json({ message: "Colaborador no encontrado." });
       }
   
-      // Devolver el primer registro (debería ser único por sucesivo_id)
       return res.status(200).json(result.recordset[0]);
     } catch (error: any) {
       console.error("Error buscando estado de sucesión por código de empleado:", error);
       return res.status(500).json({ message: error.message });
     }
   },
-
+  verificarRegistrosAnioAnterior: async (req: Request, res: Response) => {
+    try {
+      const { anio } = req.body;
+  
+      if (!anio) {
+        return res.status(400).json({ message: "El parámetro 'anio' es requerido." });
+      }
+  
+      const anioAnterior = Number(anio) - 1;
+      const pool = await getconectionVDBGAMA();
+  
+      if (!pool) {
+        return res.status(500).json({ message: "No hay conexión con la base de datos." });
+      }
+  
+      const result = await pool.request()
+        .input('anio', anioAnterior)
+        .query(`
+          SELECT COUNT(*) as registroCount
+          FROM [grata].[dbo].[sucesion]
+          WHERE anio = @anio;
+        `);
+  
+      const registroCount = result.recordset[0].registroCount;
+      pool.close();
+  
+      return res.status(200).json({ exists: registroCount >= 10 });
+    } catch (error: any) {
+      console.error("Error verificando registros del año anterior:", error);
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  clonarSucesionAnioAnterior: async (req: Request, res: Response) => {
+    try {
+      const { anio } = req.body;
+  
+      if (!anio) {
+        return res.status(400).json({ message: "El parámetro 'anio' es requerido." });
+      }
+  
+      const anioAnterior = Number(anio) - 1;
+      const pool = await getconectionVDBGAMA();
+  
+      if (!pool) {
+        return res.status(500).json({ message: "No hay conexión con la base de datos." });
+      }
+  
+      // Insertar los registros del año anterior con el año actualizado al año seleccionado
+      await pool.request()
+        .input('anioAnterior', anioAnterior)
+        .input('anioActual', anio)
+        .query(`
+          INSERT INTO [grata].[dbo].[sucesion] (
+            Nombre, Edad, Antigüedad, Puesto_actual, Formación, fecha_registro,
+            sucesivo_id, orden, anio, Opcion, codigo_Empleado
+          )
+          SELECT 
+            Nombre, Edad, Antigüedad, Puesto_actual, Formación, GETDATE() AS fecha_registro,
+            sucesivo_id, orden, @anioActual AS anio, Opcion, codigo_Empleado
+          FROM 
+            [grata].[dbo].[sucesion]
+          WHERE 
+            anio = @anioAnterior;
+        `);
+  
+      pool.close();
+  
+      return res.status(200).json({ message: "Sucesiones clonadas correctamente al año actual." });
+    } catch (error: any) {
+      console.error("Error clonando sucesiones:", error);
+      return res.status(500).json({ message: error.message });
+    }
+  },
+  
 };
 export default grataController;

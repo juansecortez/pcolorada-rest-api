@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/KryptomSilver/pcolorada-rest-api#readme",
   "dependencies": {
+    "@types/express-rate-limit": "^6.0.2",
     "axios": "^1.7.3",
     "cookie-parser": "1.4.5",
     "cors": "2.8.5",
@@ -27,6 +28,7 @@
     "exceljs": "4.3.0",
     "express": "^4.19.2",
     "express-fileupload": "^1.5.1",
+    "express-rate-limit": "^7.4.1",
     "express-validator": "6.13.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "1.10.0",
@@ -34,6 +36,7 @@
     "mssql": "^11.0.1",
     "nodemailer": "^6.9.14",
     "odbc": "^2.4.9",
+    "react-beautiful-dnd": "^13.1.1",
     "swagger-ui-express": "4.3.0",
     "xlsx": "0.18.0"
   },

@@ -28,4 +28,6 @@ router.post('/buscarcolaboradorporcodigo', grataCtrl_1.default.buscarColaborador
 router.post('/eliminarregistroporid', grataCtrl_1.default.eliminarRegistroPorId);
 router.post('/modificarregistroporid', grataCtrl_1.default.modificarRegistroPorId);
 router.post('/indicadores', grataCtrl_1.default.buscarEstadoSucesionPorCodigoEmplead);
+router.post('/verificar-anio-anterior', grataCtrl_1.default.verificarRegistrosAnioAnterior);
+router.post('/clonar-sucesion-anio-anterior', grataCtrl_1.default.clonarSucesionAnioAnterior);
 exports.default = router;
